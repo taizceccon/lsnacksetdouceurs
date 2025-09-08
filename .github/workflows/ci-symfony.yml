@@ -14,26 +14,26 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: lsnacksdb_test
+          MYSQL_DATABASE: lsnsacksdb_test
           MYSQL_USER: symfony
           MYSQL_PASSWORD: symfony
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
 
       mongodb:
         image: mongo:6.0
         ports:
           - 27017:27017
         options: >-
-          --health-cmd="echo 'db.runCommand({ ping: 1 })' | mongo"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --health-cmd="echo 'Mongo is ready'"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=1
 
     steps:
       - name: Checkout code
@@ -49,19 +49,17 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for MySQL
         run: |
           until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
             echo "Waiting for MySQL..."
             sleep 2
           done
 
-      - name: Wait for MongoDB to be ready
+      - name: Wait for MongoDB
         run: |
-          until nc -z mongodb 27017; do
-            echo "Waiting for MongoDB..."
-            sleep 2
-          done
+          echo "Waiting 10s for MongoDB..."
+          sleep 10
 
       - name: Setup Test Database
         run: |
@@ -69,9 +67,9 @@ jobs:
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:update --force --env=test
 
-      - name: Run Tests
+      - name: Run PHPUnit Tests
         run: php bin/phpunit --testsuite=unit
         env:
-          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
-          MONGODB_URL: "mongodb://mongodb:27017"
-          MONGODB_DB: "lsnacksdb_test"
+          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnsacksdb_test"
+          MONGODB_URL: "mongodb://127.0.0.1:27017"
+          MONGODB_DB: "lsnsacksdb_test"
