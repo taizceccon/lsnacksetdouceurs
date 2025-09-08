@@ -2,9 +2,9 @@ name: CI Symfony
 
 on:
   push:
-    branches: [dev]
+    branches: [ dev, main ]
   pull_request:
-    branches: [dev]
+    branches: [ dev, main ]
 
 jobs:
   symfony-tests:
@@ -14,7 +14,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: lsancksdb_test
+          MYSQL_DATABASE: lsnsacksdb_test
           MYSQL_USER: symfony
           MYSQL_PASSWORD: symfony
         ports:
@@ -23,38 +23,55 @@ jobs:
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
+          --health-retries=3
+
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
           --health-retries=5
 
     steps:
-      # 1. Checkout repository
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Copier le fichier .env.test pour CI
-      - name: Copy test env
-        run: cp app/.env.test app/.env
-
-      # 3. Installer PHP et extensions nécessaires
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
-          extensions: mbstring, intl, pdo_mysql
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo_mysql, mongodb
+          coverage: xdebug
 
-      # 4. Installer Composer et dépendances
       - name: Install Composer dependencies
-        working-directory: ./app
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      # 5. Réinitialiser complètement la base de test
-      - name: Reset test database
-        working-directory: ./app
+      - name: Wait for MySQL to be ready
+        run: |
+          until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      - name: Wait for MongoDB to be ready
+        run: |
+          until mongosh --eval 'db.adminCommand({ ping: 1 })'; do
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+
+      - name: Setup Test Database
         run: |
           php bin/console doctrine:database:drop --force --env=test || true
           php bin/console doctrine:database:create --env=test
-          php bin/console doctrine:schema:create --env=test
+          php bin/console doctrine:schema:update --force --env=test
 
-      # 6. Lancer les tests PHPUnit
-      - name: Run PHPUnit tests
-        working-directory: ./app
-        run: APP_ENV=test php bin/phpunit --testdox
+      - name: Run Tests
+        run: php bin/phpunit --testsuite=unit
+        env:
+          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnsacksdb_test"
+          MONGODB_URL: "mongodb://127.0.0.1:27017"
+          MONGODB_DB: "lsnsacksdb_test"
