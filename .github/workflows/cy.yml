@@ -1,4 +1,4 @@
-name: CI Symfony
+name: CI Symfony Minimal
 
 on:
   push:
@@ -33,6 +33,7 @@ jobs:
           --health-interval=5s
           --health-timeout=3s
           --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -42,31 +43,30 @@ jobs:
         with:
           php-version: '8.3'
           extensions: mbstring, intl, pdo_mysql, mongodb
-          coverage: xdebug
+          coverage: none
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction --working-dir=app
 
-      - name: Wait for MySQL and setup user
+      - name: Copy .env.dist to .env
+        run: cp app/.env.dist app/.env
+
+      - name: Wait for MySQL
         run: |
           until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
             echo "Waiting for MySQL..."
             sleep 2
           done
-          mysql -h127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS lsnacksdb_test;"
-          mysql -h127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'symfony'@'%' IDENTIFIED BY 'symfony';"
-          mysql -h127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'symfony'@'%' WITH GRANT OPTION;"
-          mysql -h127.0.0.1 -uroot -proot -e "FLUSH PRIVILEGES;"
-      - name: Wait for MongoDB
-        run: |
-          echo "Waiting 15s for MongoDB..."
-          sleep 15
+
       - name: Setup Test Database
         run: |
-          php bin/console doctrine:database:drop --force --env=test || true
-          php bin/console doctrine:database:create --env=test
-          php bin/console doctrine:schema:update --force --env=test
-      - name: Run PHPUnit Tests
+          php app/bin/console doctrine:database:drop --force --env=test || true
+          php app/bin/console doctrine:database:create --env=test
+          php app/bin/console doctrine:schema:update --force --env=test
+        env:
+          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
+
+      - name: Run PHPUnit Minimal Test
         run: cd app && php vendor/bin/phpunit --configuration phpunit.dist.xml --testsuite="Project Test Suite"
         env:
           DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
