@@ -7,7 +7,6 @@
          failOnDeprecation="true"
          failOnNotice="true"
          failOnWarning="true"
-         bootstrap="tests/bootstrap.php"
          cacheDirectory=".phpunit.cache"
 >
     <php>
@@ -18,11 +17,13 @@
         <env name="KERNEL_CLASS" value="App\Kernel"/>
     </php>
 
+   <phpunit bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    </phpunit>
 
     <source ignoreSuppressionOfDeprecations="true"
             ignoreIndirectDeprecations="true"
