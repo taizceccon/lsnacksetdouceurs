@@ -30,7 +30,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd="mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-cmd="echo 'db.runCommand({ ping: 1 })' | mongo"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -49,11 +49,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Install MongoDB Shell
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mongodb-clients
-
       - name: Wait for MySQL to be ready
         run: |
           until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
@@ -63,7 +58,7 @@ jobs:
 
       - name: Wait for MongoDB to be ready
         run: |
-          until mongosh --eval 'db.adminCommand({ ping: 1 })'; do
+          until nc -z mongodb 27017; do
             echo "Waiting for MongoDB..."
             sleep 2
           done
@@ -78,5 +73,5 @@ jobs:
         run: php bin/phpunit --testsuite=unit
         env:
           DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
-          MONGODB_URL: "mongodb://127.0.0.1:27017"
-          MONGODB_DB: "lsnacksdb_test"          
+          MONGODB_URL: "mongodb://mongodb:27017"
+          MONGODB_DB: "lsnacksdb_test"
