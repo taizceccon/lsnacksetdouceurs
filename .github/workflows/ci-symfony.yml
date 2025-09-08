@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Récupérer le dépôt
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Copier le fichier .env.test avant l'installation de Composer
+      # 2. Copier le fichier .env.test avant installation des dépendances
       - name: Copy test env
         working-directory: ./app
         run: cp .env.test .env
@@ -33,19 +33,28 @@ jobs:
         working-directory: ./app
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      # 5. Supprimer l’ancienne base SQLite pour repartir à zéro
-      - name: Reset SQLite DB
+      # 5. Nettoyer le cache et réinitialiser SQLite
+      - name: Clean cache and reset SQLite
         working-directory: ./app
         run: |
+          rm -rf var/cache/*
           rm -f var/data.db
           mkdir -p var
+          touch var/data.db
 
-      # 6. Créer le schéma de base de données
+      # 6. Drop et create database (SQLite)
+      - name: Drop and create database
+        working-directory: ./app
+        run: |
+          php bin/console doctrine:database:drop --force --env=test || true
+          php bin/console doctrine:database:create --env=test
+
+      # 7. Créer le schéma propre
       - name: Create database schema
         working-directory: ./app
         run: php bin/console doctrine:schema:create --env=test
 
-      # 7. Lancer les tests PHPUnit
+      # 8. Lancer les tests PHPUnit
       - name: Run PHPUnit tests
         working-directory: ./app
         run: APP_ENV=test php bin/phpunit --testdox
