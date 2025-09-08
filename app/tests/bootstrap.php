@@ -2,7 +2,7 @@
 
 use Symfony\Component\Dotenv\Dotenv;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 if (method_exists(Dotenv::class, 'bootEnv')) {
     // Charge le .env.test pour la CI
