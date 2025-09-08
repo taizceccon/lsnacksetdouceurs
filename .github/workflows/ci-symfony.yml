@@ -14,7 +14,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: lsnsacksdb_test
+          MYSQL_DATABASE: lsnacksdb_test
           MYSQL_USER: symfony
           MYSQL_PASSWORD: symfony
         ports:
@@ -49,6 +49,11 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
+      - name: Install MongoDB Shell
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mongodb-clients
+
       - name: Wait for MySQL to be ready
         run: |
           until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
@@ -72,6 +77,6 @@ jobs:
       - name: Run Tests
         run: php bin/phpunit --testsuite=unit
         env:
-          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnsacksdb_test"
+          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
           MONGODB_URL: "mongodb://127.0.0.1:27017"
-          MONGODB_DB: "lsnsacksdb_test"
+          MONGODB_DB: "lsnacksdb_test"          
