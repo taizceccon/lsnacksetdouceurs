@@ -14,7 +14,6 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: lsnsacksdb_test
           MYSQL_USER: symfony
           MYSQL_PASSWORD: symfony
         ports:
@@ -36,8 +35,7 @@ jobs:
           --health-retries=10
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
