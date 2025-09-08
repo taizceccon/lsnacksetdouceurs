@@ -22,16 +22,16 @@ jobs:
           extensions: mbstring, pdo_mysql, intl
 
       - name: Install Composer dependencies
-        working-directory: ./app
+        working-directory: app
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Prepare test database
-        working-directory: ./app
+        working-directory: app
         run: |
           cp .env.test .env
           php bin/console doctrine:database:create --if-not-exists --env=test
           php bin/console doctrine:schema:update --force --env=test
 
       - name: Run PHPUnit tests
-        working-directory: ./app
+        working-directory: app
         run: APP_ENV=test php bin/phpunit --testdox
