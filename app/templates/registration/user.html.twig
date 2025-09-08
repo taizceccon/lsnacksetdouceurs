@@ -37,8 +37,6 @@
 
     {{ form_start(registrationForm) }}
         <div class="grid grid-cols-1 gap-4">
-            <!-- Champs de formulaire avec gestion des classes Dark Mode -->
-
             {# Email en lecture seule #}        
             {{ form_row(registrationForm.email, { 
                 'attr': { 
@@ -63,10 +61,10 @@
             {{ form_row(registrationForm.agreeTerms, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
         </div>
         <div class="mt-6 flex justify-between items-center">
-            <button class="bg-rose-600 hover:bg-rose-700 text-red-500 px-4 py-2 rounded-lg" type="submit">
+            <button class="bg-rose-600 hover:bg-rose-700 text-red-100 px-4 py-2 rounded-lg" type="submit">
                 Enregistrer
             </button>
-            <a href="{{ path('app_logout') }}" class="text-sm text-red-500 hover:underline flex items-center">
+            <a href="{{ path('app_logout') }}" class="text-sm text-red-100 hover:underline flex items-center">
                 <i class="fas fa-sign-out-alt mr-2"></i> Se déconnecter
             </a>
         </div>
