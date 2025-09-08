@@ -14,56 +14,47 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: lsnacksdb_test
+          MYSQL_DATABASE: lsancksdb_test
           MYSQL_USER: symfony
           MYSQL_PASSWORD: symfony
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=5s
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
           --health-timeout=5s
-          --health-retries=10
+          --health-retries=5
 
     steps:
-      # 1. Récupérer le dépôt
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Copier .env.test
+      # 2. Copier le fichier .env.test pour CI
       - name: Copy test env
         run: cp app/.env.test app/.env
 
-      # 3. Installer PHP et extensions
+      # 3. Installer PHP et extensions nécessaires
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          coverage: none
           extensions: mbstring, intl, pdo_mysql
 
-      # 4. Installer Composer
+      # 4. Installer Composer et dépendances
       - name: Install Composer dependencies
         working-directory: ./app
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      # 5. Attendre MySQL
-      - name: Wait for MySQL
-        run: |
-          until php -r "new PDO('mysql:host=127.0.0.1;dbname=lsnacksdb_test','symfony','symfony');" >/dev/null 2>&1; do
-            echo "Waiting for MySQL..."
-            sleep 2
-          done
-
-      # 6. Reset database
-      - name: Reset database
+      # 5. Réinitialiser complètement la base de test
+      - name: Reset test database
         working-directory: ./app
         run: |
           php bin/console doctrine:database:drop --force --env=test || true
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:create --env=test
 
-      # 7. Lancer les tests
+      # 6. Lancer les tests PHPUnit
       - name: Run PHPUnit tests
         working-directory: ./app
         run: APP_ENV=test php bin/phpunit --testdox
