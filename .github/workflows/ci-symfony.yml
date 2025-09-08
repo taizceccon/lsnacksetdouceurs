@@ -33,18 +33,25 @@ jobs:
         working-directory: ./app
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      # 5. Réinitialiser la base SQLite
+        # Réinitialiser complètement SQLite
       - name: Reset SQLite DB
         working-directory: ./app
         run: |
-          rm -f var/data.db
-          mkdir -p var
-          touch var/data.db
+            rm -f var/data.db
+            mkdir -p var
+            touch var/data.db
 
-      # 6. Mettre à jour le schéma de la base
-      - name: Update database schema
+        # Créer la base (utile avec SQLite)
+      - name: Drop and create database
         working-directory: ./app
-        run: php bin/console doctrine:schema:update --force --env=test
+        run: |
+            php bin/console doctrine:database:drop --force --env=test || true
+            php bin/console doctrine:database:create --env=test
+
+        # Créer le schéma
+      - name: Create database schema
+        working-directory: ./app
+        run: php bin/console doctrine:schema:create --env=test
 
       # 7. Lancer les tests PHPUnit
       - name: Run PHPUnit tests
