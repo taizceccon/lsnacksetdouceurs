@@ -4,10 +4,10 @@ namespace App\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class DemoTest extends TestCase
+class ExampleTest extends TestCase
 {
-    public function testExample(): void
+    public function testTrueIsTrue(): void
     {
-        $this->assertTrue(true, 'This test always passes.');
+        $this->assertTrue(true);
     }
 }
