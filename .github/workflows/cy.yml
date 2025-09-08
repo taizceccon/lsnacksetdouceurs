@@ -20,21 +20,19 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -uroot -proot --silent"
-          --health-interval=10s
-          --health-timeout=5s
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=5s
+          --health-timeout=3s
           --health-retries=10
-
       mongodb:
         image: mongo:6.0
         ports:
           - 27017:27017
         options: >-
-          --health-cmd="mongo --eval 'db.adminCommand({ ping: 1 })'"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
-
+          --health-cmd="echo 'Mongo is ready'"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=5
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -49,30 +47,28 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for MySQL and setup user
         run: |
           until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
             echo "Waiting for MySQL..."
             sleep 2
           done
-
-      - name: Wait for MongoDB to be ready
+          mysql -h127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS lsnacksdb_test;"
+          mysql -h127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'symfony'@'%' IDENTIFIED BY 'symfony';"
+          mysql -h127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'symfony'@'%' WITH GRANT OPTION;"
+          mysql -h127.0.0.1 -uroot -proot -e "FLUSH PRIVILEGES;"
+      - name: Wait for MongoDB
         run: |
-          until mongo --eval 'db.adminCommand({ ping: 1 })'; do
-            echo "Waiting for MongoDB..."
-            sleep 2
-          done
-
+          echo "Waiting 15s for MongoDB..."
+          sleep 15
       - name: Setup Test Database
         run: |
           php bin/console doctrine:database:drop --force --env=test || true
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:update --force --env=test
-
-      - name: Run Tests
+      - name: Run PHPUnit Tests
         run: php bin/phpunit --testsuite=unit
         env:
-          APP_ENV: test
           DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
           MONGODB_URL: "mongodb://127.0.0.1:27017"
           MONGODB_DB: "lsnacksdb_test"
