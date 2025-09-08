@@ -14,6 +14,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: lsnsacksdb_test
           MYSQL_USER: symfony
           MYSQL_PASSWORD: symfony
         ports:
@@ -23,19 +24,18 @@ jobs:
           --health-interval=5s
           --health-timeout=3s
           --health-retries=10
-
       mongodb:
         image: mongo:6.0
         ports:
           - 27017:27017
         options: >-
-          --health-cmd="mongo --eval 'db.adminCommand({ ping: 1 })'"
+          --health-cmd="echo 'Mongo is ready'"
           --health-interval=5s
           --health-timeout=3s
-          --health-retries=10
-
+          --health-retries=5
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -47,32 +47,28 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Wait for MySQL
+      - name: Wait for MySQL and setup user
         run: |
           until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
             echo "Waiting for MySQL..."
             sleep 2
           done
-
+          mysql -h127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS lsnsacksdb_test;"
+          mysql -h127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'symfony'@'%' IDENTIFIED BY 'symfony';"
+          mysql -h127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'symfony'@'%' WITH GRANT OPTION;"
+          mysql -h127.0.0.1 -uroot -proot -e "FLUSH PRIVILEGES;"
       - name: Wait for MongoDB
         run: |
-          until mongo --eval "db.adminCommand({ ping: 1 })"; do
-            echo "Waiting for MongoDB..."
-            sleep 2
-          done
-
+          echo "Waiting 15s for MongoDB..."
+          sleep 15
       - name: Setup Test Database
         run: |
-          echo "CREATE DATABASE IF NOT EXISTS lsnsacksdb_test_test;" | mysql -uroot -proot
-          echo "CREATE USER IF NOT EXISTS 'symfony'@'%' IDENTIFIED BY 'symfony';" | mysql -uroot -proot
-          echo "GRANT ALL PRIVILEGES ON lsnsacksdb_test_test.* TO 'symfony'@'%';" | mysql -uroot -proot
           php bin/console doctrine:database:drop --force --env=test || true
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:update --force --env=test
-
       - name: Run PHPUnit Tests
         run: php bin/phpunit --testsuite=unit
         env:
-          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnsacksdb_test_test"
+          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnsacksdb_test"
           MONGODB_URL: "mongodb://127.0.0.1:27017"
-          MONGODB_DB: "lsnsacksdb_test_test"
+          MONGODB_DB: "lsnsacksdb_test"
