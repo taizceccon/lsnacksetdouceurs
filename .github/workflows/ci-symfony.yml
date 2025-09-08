@@ -10,51 +10,58 @@ jobs:
   symfony-tests:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: lsnacksdb_test
+          MYSQL_USER: symfony
+          MYSQL_PASSWORD: symfony
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
     steps:
       # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Copier le fichier .env.test avant installation des dépendances
-      - name: Copy test env
-        working-directory: ./app
-        run: cp .env.test .env
-
-      # 3. Installer PHP et extensions nécessaires
+      # 2. Set up PHP
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           coverage: none
-          extensions: mbstring, intl, pdo_sqlite, pdo_mysql
+          extensions: mbstring, intl, pdo_mysql
 
-      # 4. Installer les dépendances Composer
+      # 3. Copy test env
+      - name: Copy .env.test to .env
+        working-directory: ./app
+        run: cp .env.test .env
+
+      # 4. Install Composer dependencies
       - name: Install Composer dependencies
         working-directory: ./app
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      # 5. Nettoyer le cache et réinitialiser SQLite
-      - name: Clean cache and reset SQLite
-        working-directory: ./app
-        run: |
-          rm -rf var/cache/*
-          rm -f var/data.db
-          mkdir -p var
-          touch var/data.db
-
-      # 6. Drop et create database (SQLite)
-      - name: Drop and create database
+      # 5. Drop & create test database
+      - name: Drop & create test database
         working-directory: ./app
         run: |
           php bin/console doctrine:database:drop --force --env=test || true
           php bin/console doctrine:database:create --env=test
 
-      # 7. Créer le schéma propre
+      # 6. Create schema
       - name: Create database schema
         working-directory: ./app
         run: php bin/console doctrine:schema:create --env=test
 
-      # 8. Lancer les tests PHPUnit
-      - name: Run PHPUnit tests
+      # 7. Run PHPUnit tests
+      - name: Run PHPUnit
         working-directory: ./app
         run: APP_ENV=test php bin/phpunit --testdox
