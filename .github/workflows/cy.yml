@@ -1,4 +1,4 @@
-name: CI Symfony Minimal
+name: CI Symfony
 
 on:
   push:
@@ -14,24 +14,25 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: lsnacksdb_test
+          MYSQL_DATABASE: lsnsacksdb_test
           MYSQL_USER: symfony
           MYSQL_PASSWORD: symfony
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
-          --health-interval=5s
-          --health-timeout=3s
-          --health-retries=10
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
       mongodb:
         image: mongo:6.0
         ports:
           - 27017:27017
         options: >-
-          --health-cmd="echo 'Mongo is ready'"
-          --health-interval=5s
-          --health-timeout=3s
+          --health-cmd="mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
           --health-retries=5
 
     steps:
@@ -43,32 +44,34 @@ jobs:
         with:
           php-version: '8.3'
           extensions: mbstring, intl, pdo_mysql, mongodb
-          coverage: none
+          coverage: xdebug
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction --working-dir=app
+        run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Copy .env.dist to .env
-        run: cp app/.env.dist app/.env
-
-      - name: Wait for MySQL
+      - name: Wait for MySQL to be ready
         run: |
           until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
             echo "Waiting for MySQL..."
             sleep 2
           done
 
+      - name: Wait for MongoDB to be ready
+        run: |
+          until mongosh --eval 'db.adminCommand({ ping: 1 })'; do
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+
       - name: Setup Test Database
         run: |
-          php app/bin/console doctrine:database:drop --force --env=test || true
-          php app/bin/console doctrine:database:create --env=test
-          php app/bin/console doctrine:schema:update --force --env=test
-        env:
-          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
+          php bin/console doctrine:database:drop --force --env=test || true
+          php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:schema:update --force --env=test
 
-      - name: Run PHPUnit Minimal Test
-        run: cd app && php vendor/bin/phpunit --configuration phpunit.dist.xml --testsuite="Project Test Suite"
+      - name: Run Tests
+        run: php bin/phpunit --testsuite=unit
         env:
-          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
+          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnsacksdb_test"
           MONGODB_URL: "mongodb://127.0.0.1:27017"
-          MONGODB_DB: "lsnacksdb_test"
+          MONGODB_DB: "lsnsacksdb_test"
