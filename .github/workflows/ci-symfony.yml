@@ -19,13 +19,24 @@ jobs:
         with:
           php-version: 8.3
           coverage: none
+          extensions: mbstring, intl, pdo_sqlite, pdo_mysql
 
-      - name: Install dependencies
-        working-directory: app
+      - name: Install Composer dependencies
+        working-directory: ./app
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Run PHPUnit (dummy test)
-        working-directory: app
-        run: |
-          cp .env.test .env
-          vendor/bin/phpunit --testdox
+      - name: Copy test env
+        working-directory: ./app
+        run: cp .env.test .env
+
+      - name: Reset SQLite DB
+        working-directory: ./app
+        run: rm -f var/data.db
+
+      - name: Update database schema
+        working-directory: ./app
+        run: php bin/console doctrine:schema:update --force --env=test
+
+      - name: Run PHPUnit tests
+        working-directory: ./app
+        run: APP_ENV=test php bin/phpunit --testdox
