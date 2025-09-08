@@ -19,20 +19,13 @@ jobs:
         with:
           php-version: 8.3
           coverage: none
-          extensions: mbstring, pdo_sqlite, intl
 
-      - name: Install Composer dependencies (no scripts)
+      - name: Install dependencies
         working-directory: app
-        run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
+        run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Prepare test database
+      - name: Run PHPUnit (dummy test)
         working-directory: app
         run: |
           cp .env.test .env
-          mkdir -p var
-          rm -f var/data.db             # supprime l’ancienne DB
-          php bin/console doctrine:schema:update --force --env=test
-
-      - name: Run PHPUnit tests
-        working-directory: app
-        run: APP_ENV=test php bin/phpunit --testdox
+          vendor/bin/phpunit --testdox
