@@ -67,7 +67,7 @@ jobs:
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:update --force --env=test
       - name: Run PHPUnit Tests
-        run: php vendor/bin/phpunit --configuration app/phpunit.dist.xml --testsuite="Project Test Suite
+        run: php vendor/bin/phpunit --configuration app/phpunit.dist.xml --testsuite="Project Test Suite"
         env:
           DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb_test"
           MONGODB_URL: "mongodb://127.0.0.1:27017"
