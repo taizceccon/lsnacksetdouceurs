@@ -30,6 +30,7 @@ jobs:
         run: |
           cp .env.test .env
           mkdir -p var
+          rm -f var/data.db             # supprime l’ancienne DB
           php bin/console doctrine:schema:update --force --env=test
 
       - name: Run PHPUnit tests
