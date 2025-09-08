@@ -2,12 +2,12 @@
 
 use Symfony\Component\Dotenv\Dotenv;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php'; // chemin relatif à app/tests/
 
-if (method_exists(Dotenv::class, 'bootEnv')) {
-    (new Dotenv())->bootEnv(__DIR__ . '/../../.env.test');
-}
+// Charger le .env.test pour GitHub CI
+$dotenv = new Dotenv();
+$dotenv->loadEnv(dirname(__DIR__).'/.env.test');
 
-if ($_SERVER['APP_DEBUG']) {
+if ($_SERVER['APP_DEBUG'] ?? false) {
     umask(0000);
 }
