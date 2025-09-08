@@ -1,49 +1,28 @@
-name: CI Symfony
+name: CI Tailwind
 
 on:
   push:
-    branches:
-      - dev
-      - admin
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - dev
-      - admin
-      - main
+    branches: [main]
 
 jobs:
-  symfony-tests:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          php-version: '8.3'
-          coverage: none
-          extensions: mbstring, intl, pdo_mysql, pdo_sqlite, mongodb, curl
+          node-version: '18'
 
-      - name: Install Composer dependencies
+      - name: Install dependencies
         run: |
-          cd app
-          composer install --prefer-dist --no-progress --no-interaction
+          npm install
 
-      - name: Copy .env.test to .env
+      - name: Build Tailwind CSS
         run: |
-          cd app
-          cp .env.test .env
-
-      - name: Create test database
-        run: |
-          cd app
-          php bin/console doctrine:database:create --if-not-exists --env=test
-          php bin/console doctrine:schema:update --force --env=test
-
-      - name: Run PHPUnit tests
-        run: |
-          cd app
-          APP_ENV=test php bin/phpunit --testdox
+          npx tailwindcss -i ./src/input.css -o ./dist/output.css --minify
