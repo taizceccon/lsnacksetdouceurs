@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Douceurs de Leila{% endblock %}
+
+{% block meta %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A propos de Leila Snacks et Douceurs, ">
+  <meta property="og:title" content="Snacks & Doeceurs Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+        Leila Snacks & Douceurs<
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+          Des délices sucrés d’exception, pensés pour combler les palais les plus raffinés.<br>
+    </p>
+</section>
+
+<section class="container mx-auto px-4 py-12 max-w-4xl ">
+    <h1 class="text-4xl font-bold text-rose-400 mb-6 text-center">Qui sommes-nous ?</h1>
+
+    <p class="text-gray-700 text-lg mb-4 leading-relaxed dark:text-gray-300">
+        Chez <strong>Leila Snacks & Douceurs</strong>, notre passion est simple : offrir des instants de bonheur à travers des saveurs authentiques et gourmandes. Nous sélectionnons soigneusement chaque produit pour garantir qualité, fraîcheur et plaisir.
+    </p>
+
+    <p class="text-gray-700 text-lg mb-4 leading-relaxed dark:text-gray-300">
+        Notre aventure a commencé avec une idée : <em>partager le goût du fait-maison, des douceurs simples mais inoubliables</em>. Grâce à votre confiance, nous avons grandi tout en gardant nos valeurs artisanales et humaines.
+    </p>
+
+    <p class="text-gray-700 text-lg mb-6 leading-relaxed dark:text-gray-300">
+        Que vous soyez amateur de snacks salés, de douceurs sucrées ou à la recherche du coffret parfait à offrir, vous êtes au bon endroit.
+    </p>
+
+    <div class="mt-10 text-center">
+        <h2 class="text-2xl font-semibold mb-4 text-rose-500">Notre mission</h2>
+        <p class="text-gray-800 text-md max-w-xl mx-auto dark:text-gray-300">
+            Créer des moments chaleureux autour de produits sincères et savoureux, livrés avec soin et sourire.
+        </p>
+    </div>
+
+    <div class="mt-12 text-center">
+        <h2 class="text-2xl font-semibold mb-4 text-rose-500">Contact & Réseaux</h2>
+        <p class="text-gray-700 dark:text-gray-300">Vous avez une question ? <a href="{{ path('app_contact') }}" class="text-rose-400 underline">Contactez-nous</a></p>
+        <p class="text-gray-700 mt-2 dark:text-gray-300">Suivez-nous sur Instagram & Facebook : <span class="font-medium">@leilasnacks</span></p>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de la catégorie - Douceurs & Snacks de Leila{% endblock %}
+
+{% block body %}
+<section class="text-center py-6 bg-pink-100 dark:bg-gray-900">
+    <h1 class="text-3xl font-cursive font-bold text-gray-900 dark:text-white">Détails de la catégorie</h1>
+    <p class="text-pink-800 dark:text-pink-300">Voici les informations sur cette douce catégorie </p>
+</section>
+
+<section class="container mx-auto py-10 max-w-xl px-4">
+    <div class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 shadow-md rounded-lg p-6 space-y-4">
+        <ul class="space-y-2">
+            <li><span class="font-semibold">ID :</span> {{ category.id }}</li>
+            <li><span class="font-semibold">Nom :</span> {{ category.category }}</li>
+        </ul>
+
+        <div class="pt-6 flex flex-col sm:flex-row gap-4">
+            <a href="{{ path('admin_category_edit', { id: category.id }) }}"
+               class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded shadow text-center transition focus:outline-none focus:ring-2 focus:ring-pink-400">
+                Modifier
+            </a>
+            <a href="{{ path('admin_category_index') }}"
+               class="text-pink-600 dark:text-pink-400 hover:underline text-center self-center">
+                ← Retour à la liste
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

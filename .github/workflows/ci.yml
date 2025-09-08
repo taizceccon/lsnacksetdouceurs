@@ -1,0 +1,49 @@
+name: CI Symfony
+
+on:
+  push:
+    branches:
+      - dev
+      - admin
+      - main
+  pull_request:
+    branches:
+      - dev
+      - admin
+      - main
+
+jobs:
+  symfony-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: mbstring, intl, pdo_mysql, pdo_sqlite, mongodb, curl
+
+      - name: Install Composer dependencies
+        run: |
+          cd app
+          composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Copy .env.test to .env
+        run: |
+          cd app
+          cp .env.test .env
+
+      - name: Create test database
+        run: |
+          cd app
+          php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:schema:update --force --env=test
+
+      - name: Run PHPUnit tests
+        run: |
+          cd app
+          APP_ENV=test php bin/phpunit --testdox

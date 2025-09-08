@@ -1,0 +1,333 @@
+/* ----------------------------- */
+/* Tailwind directives          */
+/* ----------------------------- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ----------------------------- */
+/* Variables CSS personnalisées  */
+/* ----------------------------- */
+:root {
+  --font-primary: 'Playfair Display', serif;
+  --font-script: 'Quicksand', sans-serif;
+
+  --color-roseClair: #E5C1BD;
+  --color-roseFonce: #9e5e57;
+  --color-menthe: #038c71;
+  --color-sauge: #487a59;
+  --color-bleuMenthe: #198d8f; 
+  --color-creme: #FEFCFA;
+  --color-fondDark: #3A322F;
+  --color-texteClair: #f3f3f3;
+  --color-jaunePale: #EDCC8B;
+
+  /* Couleurs dynamiques pour boutons */
+  --btn-bg: var(--color-menthe);
+  --btn-text: #fff;
+  --btn-hover-bg: var(--color-roseFonce);
+  --btn-hover-text: #fff;
+}
+
+/* ----------------------------- */
+/* Global / Reset               */
+/* ----------------------------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-primary);
+  background-color: var(--color-creme);
+  color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ----------------------------- */
+/* Boutons principaux            */
+/* ----------------------------- */
+.btn {
+  background-color: var(--btn-bg);
+  border-radius: 9999px; /* rounded-full */
+  padding: 0.25rem 1.5rem;
+  font-weight: 700;
+  transition: all 0.2s ease-in-out;
+  color: var(--btn-text);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.btn:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--btn-hover-text);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-menthe);
+}
+
+/* ----------------------------- */
+/* Bannières spécifiques         */
+/* ----------------------------- */
+.banner-contact {
+  box-shadow: 0 4px 12px rgba(234, 143, 169, 0.3);
+}
+
+.banner-produit {
+  background: var(--color-roseFonce);
+  box-shadow: 0 4px 12px rgba(234, 143, 169, 0.3);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+/* ----------------------------- */
+/* Titres                        */
+/* ----------------------------- */
+h1, .section-title {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-family: var(--font-script);
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--color-sauge);
+  margin-bottom: 1rem;
+}
+
+h3, h4, .sub-title {
+  font-family: var(--font-script);
+  font-weight: 600;
+  color: var(--color-sauge);
+}
+
+a {
+  color: var(--color-fondDark);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover,
+a:focus {
+  color: var(--color-bleuMenthe);
+  text-decoration: underline;
+  outline: none;
+}
+
+.header-link {
+  color: var(--color-bleuMenthe); /* texte bleu menthe */
+  transition: color 0.2s ease;
+  font-size: 1.125rem; /* = text-lg (18px) */
+  font-weight: 600;    /* gras moyen */
+}
+
+.header-link:hover,
+.header-link:focus {
+  color: var(--color-roseFonce); /* hover rose foncé */
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-roseFonce);
+  outline-offset: 2px;
+}
+
+
+body[data-theme='dark'] .header-link:hover,
+body[data-theme='dark'] .header-link:focus {
+  color: var(--color-menthe); /* hover vert menthe en dark */
+}
+
+.footer-link {
+  color: #fff; /* texte blanc */
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover,
+.footer-link:focus {
+  color: #EDCC8B; /* couleur hover */
+  outline: none;
+}
+
+body[data-theme='dark'] .footer-link {
+  color: #fff;
+}
+
+body[data-theme='dark'] .footer-link:hover,
+body[data-theme='dark'] .footer-link:focus {
+  color: #EDCC8B;
+}
+
+/* Contact form button            */
+.contact-form button {
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.contact-form button:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--btn-hover-text);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(107, 190, 184, 0.4);
+}
+
+/* Forms / contact */
+
+.contact-form {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 2rem;
+  box-shadow: 0 0 20px rgba(229, 193, 189, 0.2);
+  max-width: 600px;
+  margin: 2rem auto;
+  font-family: var(--font-script);
+}
+
+.contact-form label {
+  color: #555;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.contact-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+  border: 2px solid var(--color-roseFonce);
+  border-radius: 8px;
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  font-size: 1rem;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--color-menthe);
+  box-shadow: 0 0 12px rgba(132, 211, 206, 0.6);
+  outline: none;
+}
+
+.readonly-email {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+}
+
+/* Alerts / flashes              */
+
+.alert-success {
+  text-align: center;
+  background-color: var(--color-roseFonce);
+  color: #fff;
+  font-weight: bold;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Responsive  */
+
+@media (max-width: 600px) {
+  .contact-form {
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 1rem;
+  }
+
+  .contact-form h1 {
+    font-size: 1.5rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 0.95rem;
+    padding: 0.65rem;
+  }
+
+  .contact-form button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+/* Dark mode  */
+
+body[data-theme='dark'] {
+  --color-creme: var(--color-fondDark);
+
+  /* boutons dark */
+  --btn-bg: var(--color-menthe);
+  --btn-text: var(--color-fondDark);
+  --btn-hover-bg: var(--color-roseFonce);
+  --btn-hover-text: var(--color-fondDark);
+  background-color: var(--color-fondDark);
+}
+
+body[data-theme='dark'] header,
+body[data-theme='dark'] .card,
+body[data-theme='dark'] footer,
+body[data-theme='dark'] .form-container,
+body[data-theme='dark'] input,
+body[data-theme='dark'] textarea {
+  background-color: #2c2c2c !important;
+  color: #f3f3f3 !important;
+  border-color: #444 !important;
+}
+
+body[data-theme='dark'] .contact-form {
+  background-color: var(--color-fondDark);
+  color: var(--color-texteClair);
+}
+
+body[data-theme='dark'] ::placeholder {
+  color: #aaa;
+}
+
+body[data-theme='dark'] #theme-toggle {
+  background-color: var(--color-roseFonce);
+  color: var(--color-fondDark);
+}
+
+/* Optimisation des performances  */
+
+.btn,
+.contact-form button {
+  will-change: transform, box-shadow;
+}
+
+/* Accessibilité                  */
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

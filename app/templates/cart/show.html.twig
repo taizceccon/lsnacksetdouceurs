@@ -1,0 +1,251 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre panier - Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Commandes - Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+<section class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-roseFonce dark:text-jaunePale">Votre panier</h1>
+
+    {% if products is empty %}
+        <p id="empty-cart-message" class="text-center text-gray-500 dark:text-gray-400 hidden">Votre panier est vide.</p>
+        <div class="text-center mt-8">
+            <a href="{{ path('app_home') }}" class="inline-block bg-rose-600 hover:bg-creme dark:hover:bg-[#3A322F] text-white font-semibold px-8 py-3 rounded shadow transition">
+                Retour à l'accueil
+            </a>
+        </div>
+    {% else %}
+
+        <!-- TABLEAU DESKTOP -->
+        <div id="cart-content" class="hidden md:block overflow-x-auto">
+            <table class="min-w-full border-separate border-spacing-0 border border-gray-300 dark:border-gray-700 shadow-sm overflow-hidden">            
+                <thead class="bg-rosé dark:bg-roseFonce">
+                    <tr class="rounded-t-lg">
+                        <th class="p-3">Produit</th>
+                        <th class="p-3 text-center">Prix unitaire</th>
+                        <th class="p-3 text-center">Quantité</th>
+                        <th class="p-3 text-center">Sous-total</th>
+                        <th class="p-3 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in products %}
+                        <tr class="border-b hover:bg-creme dark:hover:bg-[#3A322F]">
+                            <td class="p-3 flex items-center gap-4">
+                                {% if item.product.image %}
+                                    <img src="{{ asset('uploads/images/' ~ item.product.image) }}" alt="{{ item.product.titre }}" class="w-20 h-12 object-cover rounded-md shadow-sm" />
+                                {% else %}
+                                    <div class="w-20 h-12 bg-gray-200 dark:bg-gray-600 rounded-md flex items-center justify-center text-gray-400 italic text-xs">Pas d'image</div>
+                                {% endif %}
+                                <span class="font-medium text-rose-900 dark:text-rose-100 truncate">{{ item.product.titre }}</span>
+                            </td>                                             
+                            <td>{{ (item.product.prix / 100) | number_format(2, ',', ' ') }} € / unité</td>
+                            <td class="p-3 text-center">
+                                <form action="{{ path('cart_update', { id: item.product.id }) }}" method="POST" class="inline-block js-update-form" data-product-id="{{ item.product.id }}">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border px-2 py-1 w-16 text-sm rounded" />
+                                    <button type="submit"class="bg-red-300 hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> 
+                                    Modifier </button>
+                                </form>
+                            </td>
+                            <td class="p-3 text-center font-bold text-green-700 dark:text-green-400 js-subtotal">
+                                {{ (item.subtotal / 100)|number_format(2, ',', ' ') }} €
+                            </td>
+                            <td class="p-3 text-center">
+                                <form action="{{ path('cart_remove', {id: item.product.id}) }}" method="post" class="js-cart-remove">
+                                {# <form action="{{ path('cart_remove', {'id': item.product.id}) }}" method="POST" onsubmit="return confirm('Supprimer {{ item.product.titre }} du panier ?');"> #}
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-semibold"> 
+                                    <i class="fas fa-trash"></i>Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bg-rosé dark:bg-roseFonce font-bold text-lg">
+                        <td colspan="3" class="text-right p-3">Total :</td>
+                        <td class="p-3 text-center js-cart-total">    {{ (total / 100)|number_format(2, ',', ' ') }} € </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CARTES MOBILE -->
+        <div id="cart-content" class="md:hidden space-y-6">
+            {% for item in products %}
+                <div class="bg-white dark:bg-[#222] rounded-lg shadow p-4 flex flex-col gap-4">
+                    <div class="flex items-center gap-4">
+                        {% if item.product.image %}
+                            <img src="{{ asset('uploads/images/' ~ item.product.image) }}" alt="{{ item.product.titre }}" class="w-24 h-16 object-cover rounded-md shadow-sm" />
+                        {% else %}
+                            <div class="w-24 h-16 bg-gray-200 dark:bg-gray-600 rounded-md flex items-center justify-center text-gray-400 italic text-xs">Pas d'image</div>
+                        {% endif %}
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg text-rose-900 dark:text-rose-100">{{ item.product.titre }}</h3>
+                            <p class="text-green-700 dark:text-green-400 font-bold js-subtotal">
+                                {{ (item.subtotal / 100) | number_format(2, ',', ' ') }} €
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <p class="text-sm"><strong>Prix unitaire :</strong> {{ (item.product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
+                        <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="js-update-form" data-product-id="{{ item.product.id }}">
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="border px-2 py-1 w-16 text-sm rounded" />
+                        <button type="submit" class="bg-roseFonce hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> Modifier </button>
+                        </form>
+                    </div>
+                    <form action="{{ path('cart_remove', {id: item.product.id}) }}" method="POST" class="js-cart-remove">
+                       <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-semibold">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
+            <div class="text-right font-bold text-lg text-rose-900 dark:text-rose-100 js-cart-total">
+                Total : {{ (total / 100)|number_format(2, ',', ' ') }} €
+            </div>
+        </div>
+
+       <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+           
+            <a href="{{ path('order_create') }}"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded shadow transition text-center">
+                Payer sur place
+            </a>
+
+            <form action="{{ path('checkout') }}" method="POST">
+                <button type="submit"
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded shadow transition flex items-center justify-center">
+                    <i class="fas fa-credit-card mr-2"></i>Payer
+                </button>
+            </form>
+
+        </div>
+        
+    {% endif %}
+</section>
+
+{% endblock %}
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // MISE À JOUR DE QUANTITÉ
+    document.querySelectorAll('form.js-update-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const action = form.getAttribute('action');
+
+            fetch(action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const container = form.closest('tr') || form.closest('.bg-white') || form.closest('.bg-[#222]');
+                    const subtotalEl = container?.querySelector('.js-subtotal');
+
+                    if (data.cartItemCount !== undefined) {
+                        const countEl = document.getElementById('cart-count');
+                        if (countEl) {
+                            countEl.textContent = data.cartItemCount;
+                            countEl.classList.toggle('hidden', data.cartItemCount === 0);
+                        }
+                    }
+
+                    if (subtotalEl) {
+                        subtotalEl.textContent = data.subtotal + ' €';
+                    }
+
+                    document.querySelectorAll('.js-cart-total').forEach(el => {
+                        el.textContent = 'Total : ' + data.total + ' €';
+                    });
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Quantité mise à jour',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire('Erreur', data.message || 'Erreur de mise à jour.', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Erreur', 'Erreur réseau.', 'error');
+            });
+        });
+    });
+
+    // SUPPRESSION DE PRODUIT
+    document.querySelectorAll('form[action*="cart/remove"]').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Supprimer cet article ?',
+                text: "Cette action est irréversible.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Oui, supprimer'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(form.getAttribute('action'), {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.cartItemCount !== undefined) {
+                            const countEl = document.getElementById('cart-count');
+                            if (countEl) {
+                                countEl.textContent = data.cartItemCount;
+                                countEl.classList.toggle('hidden', data.cartItemCount === 0);
+                            }
+                        }
+
+                        if (data.success) {
+                            const container = form.closest('tr') || form.closest('.bg-white') || form.closest('.bg-[#222]');
+                            container?.remove();
+
+                            document.querySelectorAll('.js-cart-total').forEach(el => {
+                                el.textContent = 'Total : ' + data.total + ' €';
+                            });
+
+                            const remainingItems = document.querySelectorAll('form[action*="cart/remove"]');
+                            if (remainingItems.length === 0) {
+                                document.getElementById('cart-content')?.classList.add('hidden');
+                                document.getElementById('empty-cart-message')?.classList.remove('hidden');
+                                document.querySelector('a[href$="order_create"]')?.remove();
+                            }
+
+                            Swal.fire('Supprimé !', 'Produit retiré du panier.', 'success');
+                        } else {
+                            Swal.fire('Erreur', data.message || 'Impossible de supprimer.', 'error');
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire('Erreur', 'Erreur réseau.', 'error');
+                    });
+                }
+            });
+        });
+    });
+
+});
+</script>
+{% endblock %}

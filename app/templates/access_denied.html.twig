@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès refusé{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+<section class="text-center py-16 bg-[#E5C1BD]">
+    <h1 class="text-4xl font-cursive text-rose-800"> Leila Snacks & Douceurs </h1>
+    <p class="text-rose-700 mt-2">Des délices sucrés d’exception, pensés pour combler les palais les plus raffinés.</p>
+</section>
+
+<div class="container mx-auto px-4 py-8 text-center">
+    <h1 class="text-4xl font-semibold text-roseFonce">Accès refusé</h1>
+    <p class="text-lg text-gray-700 mt-4">Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
+    <p class="text-sm text-gray-500 mt-2">Si vous pensez qu'il s'agit d'une erreur, veuillez contacter l'administrateur.</p>
+    <a href="{{ path('app_home') }}" class="mt-6 inline-block px-6 py-3 bg-bleuMenthe text-white rounded-lg hover:bg-roseFonce">Retour à l'accueil</a>
+</div>
+{% endblock %}

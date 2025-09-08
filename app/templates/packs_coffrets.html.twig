@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Packs & Coffrets de Leila{% endblock %}
+{% block meta %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+         {{ category.category }} 
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+                Des assortiments gourmands pour faire plaisir ou se faire plaisir.
+    </p>
+</section>
+
+<section class="px-4 mx-auto max-w-7xl py-10">
+    {% if category %}
+       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for product in category.products %}
+             <div class="bg-creme dark:bg-fondDark rounded-xl shadow-md hover:shadow-xl transition p-4 flex flex-col items-center text-center">     
+                    {% if product.image %}
+                    <a href="{{ path('product_show', {'id': product.id}) }}">
+                      <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer" width="300" height="200"> 
+                    </a>
+                    {% else %}
+                        <span class="text-gray-400 italic">Pas d'image</span>                     
+                    {% endif %}
+                    <h3 class="font-bold text-lg hover:underline">{{ product.titre }}</h3>                   
+                    <p class="text-sm"> {{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}</p>
+                    {% if product.urlvideo %}
+                        <a href="{{ product.urlvideo }}" target="_blank" class="text-green-500 underline block mt-2">Voir la vidéo</a>
+                    {% endif %}
+                    <h4 class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</h4>
+                    <form action="{{ path('cart_add') }}" method="POST" class="mt-2">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <h5 class="text-sm">Quantité: <input type="number" name="quantity" value="1" min="1" class=" dark:bg-[#1e1e1e] dark:text-gray-200 border rounded w-16 text-center"></h5>
+                        <br>
+                        <button type="submit" class="bg-roseFonce hover:bg-menthe text-white px-8 py-1 rounded-full cursor-pointer transition duration-200" aria-label="Ajouter au panier">
+                            <i class="fas fa-basket-shopping mr-2 "></i> Ajouter
+                        </button>
+                    </form>          
+                
+                  </div>
+            {% endfor %}
+         </div>
+    {% else %}
+        <p class="text-center text-gray-600">La catégorie {{ category.category }} n'existe pas ou a été désactivée.</p>
+    {% endif %}
+  </section>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Connexion Douceurs de Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<div class="flex items-center justify-center bg-white dark:bg-[#333] py-6 px-4 sm:px-6 lg:px-8 flex-grow">
+    <div class="max-w-md w-full bg-white dark:bg-[#333] p-8 rounded-lg shadow-xl border border-jaunePale space-y-6">
+
+            <!-- Logo -->
+            <div class="flex justify-center">
+                <img src="/images/logo.webp" alt="Logo Leila" class="h-24 w-auto">
+            </div>
+
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-roseFonce">Créer un compte </h2>
+                <p class="mt-1 text-sm text-vertSauge">Rejoignez-nous pour savourer toutes nos douceurs !</p>
+            </div>
+
+            {{ form_start(registrationForm) }}
+                {{ form_errors(registrationForm) }}
+
+                <div class="space-y-4">
+
+                    <div>
+                        {{ form_label(registrationForm.nom, 'Nom complet', {'label_attr': {'class': 'block text-sm font-medium text-roseFonce'}}) }}
+                        {{ form_widget(registrationForm.nom, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 focus:outline-none focus:ring-bleuMenthe focus:border-bleuMenthe'}}) }}
+                        {{ form_errors(registrationForm.nom) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(registrationForm.adresse, 'Adresse', {'label_attr': {'class': 'block text-sm font-medium text-roseFonce'}}) }}
+                        {{ form_widget(registrationForm.adresse, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 focus:outline-none focus:ring-bleuMenthe focus:border-bleuMenthe'}}) }}
+                        {{ form_errors(registrationForm.adresse) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(registrationForm.telephone, 'Téléphone', {'label_attr': {'class': 'block text-sm font-medium text-roseFonce'}}) }}
+                        {{ form_widget(registrationForm.telephone, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 focus:outline-none focus:ring-bleuMenthe focus:border-bleuMenthe'}}) }}
+                        {{ form_errors(registrationForm.telephone) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(registrationForm.email, 'Adresse e-mail', {'label_attr': {'class': 'block text-sm font-medium text-roseFonce'}}) }}
+                        {{ form_widget(registrationForm.email, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 focus:outline-none focus:ring-bleuMenthe focus:border-bleuMenthe' }}) }}
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'block text-sm font-medium text-roseFonce'}}) }}
+                        {{ form_widget(registrationForm.plainPassword, {'attr': {
+                            'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 focus:outline-none focus:ring-bleuMenthe focus:border-bleuMenthe'
+                        }}) }}
+                        {{ form_errors(registrationForm.plainPassword) }}
+                    </div>
+
+                    <div>
+                        {{ form_row(registrationForm.agreeTerms) }}
+                    </div>
+                    {# indispensable pour inclure le token CSRF #}
+                    {{ form_rest(registrationForm) }}
+                    
+                    <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium  bg-vertSauge hover:bg-bleuMenthe focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-roseFonce transition">
+                        S'inscrire
+                    </button>
+                </div>
+            {{ form_end(registrationForm) }}
+
+            <p class="mt-4 text-center text-sm text-vertSauge">
+                Vous avez déjà un compte ?
+                <a href="{{ path('app_login') }}" class="text-roseFonce hover:text-bleuMenthe font-medium">Se connecter</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

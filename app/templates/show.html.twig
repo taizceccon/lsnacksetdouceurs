@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Packs & Coffrets de Leila{% endblock %}
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-texteClair mb-4">Snacks & Douceurs de Leila</h1>
+    <p class="text-rose-100 max-w-3xl mx-auto text-lg sm:text-xl">Des saveurs de fait maison pour tous les moments – faites avec amour et une touche spéciale de Leila.  </p>
+</section>
+
+<section class="container mx-auto py-10 max-w-4xl">
+    <div class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-1/2">
+            <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}"  width="300" height="200" loading="lazy" decoding="async" class="mx-auto rounded mb-2">
+            {% if product.urlvideo %}
+                <video controls class="mt-4 w-full rounded shadow">
+                    <source src="{{ product.urlvideo }}" type="video/mp4">
+                    Votre navigateur ne supporte pas la vidéo.
+                </video>
+            {% endif %}
+        </div>
+        <div class="md:w-1/2">
+            <h1 class="text-4xl font-bold mb-4">{{ product.titre }}</h1>
+            <p class="text-gray-700 mb-6">{{ product.description }}</p>
+            <p class="text-green-600 font-semibold text-2xl mb-6">{{ (product.prix / 100)|number_format(2, ',', ' ') }} €</p>
+            
+           <form action="{{ path('cart_add') }}" method="POST">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <label for="quantity" class="font-semibold">Quantité :</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border rounded w-20 text-center">
+                <button type="submit" class="bg-red-300 hover:bg-red-400 text-white font-semibold px-4 py-2 rounded w-full sm:w-auto" title="Ajouter au panier">
+                <i class="fas fa-basket-shopping mr-2"></i>Ajouter</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+<h1>Bonjour </h1>
+
+<p>Merci de vous être inscrit sur Leila Snacks et Douceurs.</p>
+
+<p>Veuillez confirmer votre adresse e-mail en cliquant sur ce lien :</p>
+
+<p><a href="{{ signedUrl |raw }}">Confirmer mon adresse email</a></p>
+
+    <p>Ce lien expire bientôt. {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.</p>
+
+
+<p>À bientôt,</p>
+<p>L’équipe Leila Snacks</p>

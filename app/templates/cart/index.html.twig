@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre panier - Leila{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Commandes - Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+<meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<section class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-roseFonce dark:text-jaunePale">Votre Panier</h1>
+
+    {% if items is empty %}
+        <p class="text-center text-sauge dark:text-jaunePale text-lg">Votre panier est vide.</p>
+    {% else %}
+        <!-- TABLEAU desktop (md et plus) -->
+        <div class="hidden md:block overflow-x-auto rounded-lg shadow border border-gray-300 dark:border-gray-700">
+            <table class="w-full border-collapse">
+                <thead class="bg-rose-200 dark:bg-rose-800">
+                    <tr>
+                        <th class="p-3 border text-left text-sm font-semibold text-rose-900 dark:text-rose-200">Produit</th>
+                        <th class="p-3 border text-center text-sm font-semibold text-rose-900 dark:text-rose-200">Prix unitaire</th>
+                        <th class="p-3 border text-center text-sm font-semibold text-rose-900 dark:text-rose-200">Quantité</th>
+                        <th class="p-3 border text-center text-sm font-semibold text-rose-900 dark:text-rose-200">Sous-total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr class="border-b dark:border-gray-700 hover:bg-rose-50 dark:hover:bg-rose-900 transition">
+                            <td class="p-3 border text-left text-rose-900 dark:text-rose-100 font-medium">
+                                {{ item.product.titre }}
+                            </td>
+                            <td class="p-3 border text-center text-rose-800 dark:text-rose-200 font-semibold">
+                                {{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €
+                            </td>
+                            <td class="p-3 border text-center">
+                                <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center justify-center gap-2">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-16 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#1e1e1e] dark:text-gray-200" />
+                                    <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white dark:text-gray-200 px-3 py-1 rounded text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">Modifier</button>
+                                </form>
+                            </td>
+                            <td class="p-3 border text-center text-green-700 dark:text-green-400 font-bold">
+                                {{ (item.product.prix * item.quantity / 100)|number_format(2, ',', ' ') }} €
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bg-gray-100 dark:bg-gray-800 font-bold text-lg text-rose-900 dark:text-rose-100">
+                        <td colspan="3" class="p-3 text-right">Total :</td>
+                        <td class="p-3 js-cart-total text-center">
+                            {{ (total / 100)|number_format(2, ',', ' ') }} €
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MOBILE (moins que md) -->
+        <div class="md:hidden space-y-6 mt-6">
+            {% for item in items %}
+                <div class="bg-rose-50 dark:bg-rose-900 rounded-lg shadow p-4">
+                    <h3 class="font-semibold text-lg text-rose-900 dark:text-rose-100 mb-2">{{ item.product.titre }}</h3>
+                    <p class="text-sm text-rose-800 dark:text-rose-200"><strong>Prix unitaire :</strong> {{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €</p>
+                    <p class="text-green-700 dark:text-green-400 font-bold mb-2">Sous-total : {{ (item.product.prix * item.quantity / 100)|number_format(2, ',', ' ') }} €</p>
+                    <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center gap-2">
+                        <label for="quantity-{{ item.product.id }}" class="sr-only">Quantité</label>
+                        <input id="quantity-{{ item.product.id }}" type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-20 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#1e1e1e] dark:text-gray-200" />
+                        <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white dark:text-gray-200 px-4 py-1 rounded text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">Modifier</button>
+                    </form>
+                </div>
+            {% endfor %}
+
+            <div class="text-right font-bold text-lg text-rose-900 dark:text-rose-100 js-cart-total mt-4">
+                Total : {{ (total / 100)|number_format(2, ',', ' ') }} €
+            </div>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.querySelectorAll('form[action*="cart_update"]').forEach(form => {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const input = form.querySelector('input[name="quantity"]');
+        const quantity = input.value;
+        const action = form.getAttribute('action');
+
+        fetch(action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ quantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const row = form.closest('tr') || form.closest('.flex.flex-col');
+                const subtotalCell = row?.querySelector('.js-subtotal');
+                if (subtotalCell) {
+                    subtotalCell.textContent = `${data.subtotal} €`;
+                }
+
+                document.querySelectorAll('.js-cart-total').forEach(el => {
+                    el.textContent = `Total : ${data.total} €`;
+                });
+            } else {
+                alert(data.message || 'Erreur lors de la mise à jour.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur AJAX :', error);
+            alert('Une erreur est survenue.');
+        });
+    });
+});
+</script>
+{% endblock %}

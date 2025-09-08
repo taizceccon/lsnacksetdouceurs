@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-2xl font-bold mb-4 dark:text-white">Modération des Avis</h1>
+
+    <table class="min-w-full bg-white dark:bg-gray-900 border rounded-lg shadow">
+        <thead class="bg-gray-100 dark:bg-gray-800">
+            <tr>
+                <th class="py-3 px-6 text-left">Nom</th>
+                <th class="py-3 px-6 text-left">Email</th>
+                {# <th class="py-3 px-6 text-left">Note</th> #}
+                <th class="py-3 px-6 text-left">Message</th>
+                <th class="py-3 px-6 text-left">Modéré?</th>
+                <th class="py-3 px-6 text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for avis in avisList %}
+                <tr class="border-t dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <td class="py-3 px-6">{{ avis.nom }}</td>
+                    <td class="py-3 px-6">{{ avis.email }}</td>
+                    {# <td class="py-3 px-6">{{ avis.note }}/5</td> #}
+                    <td class="py-3 px-6">{{ avis.message }}</td>
+                    <td class="py-3 px-6">
+                        {{ avis.isModerated ? 'Oui' : 'Non' }}
+                    </td>
+                    <td class="py-3 px-6 text-center space-x-1">
+                        {% if not avis.isModerated %}
+                            <a href="{{ path('admin_avis_moderate', {'id': avis.id}) }}">
+                                <i class="fas fa-check"></i> Approuver
+                            </a>
+                        {% else %}
+                            <span class="text-sm text-gray-500 italic">Déjà modéré</span>
+                        {% endif %}
+
+                        <form method="post" action="{{ path('admin_avis_delete', {'id': avis.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet avis ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-avis' ~ avis.id) }}">
+                            <button type="submit" class="text-red-600 hover:text-red-900">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center py-6 text-gray-600 dark:text-gray-300">Aucun avis pour le moment.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

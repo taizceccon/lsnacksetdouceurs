@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion Douceurs de Leila {% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+        Leila Snacks & Douceurs<
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+          Des délices sucrés d’exception, pensés pour combler les palais les plus raffinés.<br>
+    </p>
+</section>
+
+ <div class="flex items-center justify-center bg-white dark:bg-[#333] py-6 px-4 sm:px-6 lg:px-8 flex-grow">
+    <div class="max-w-4xl w-full mx-auto bg-white dark:bg-[#333] p-8 rounded-lg shadow-xl border border-jaunePale space-y-6">
+
+
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Mon compte</h1>
+
+    <!-- Affichage des erreurs de formulaire si existantes -->
+    {% for flash_message in app.flashes('error') %}
+        <div class="bg-red-600 text-white p-4 rounded-lg mb-4">
+            <strong>Erreur !</strong> {{ flash_message }}
+        </div>
+    {% endfor %}
+    {% for flash_message in app.flashes('success') %}
+        <div class="bg-green-600 text-white p-4 rounded-lg mb-4">
+            <strong>Succès !</strong> {{ flash_message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(registrationForm) }}
+        <div class="grid grid-cols-1 gap-4">
+            <!-- Champs de formulaire avec gestion des classes Dark Mode -->
+
+            {# Email en lecture seule #}        
+            {{ form_row(registrationForm.email, { 
+                'attr': { 
+                    'readonly': true, 
+                    'class': 'p-2 border rounded-md bg-gray-100 dark:bg-[#3a3a3a] text-gray-700 dark:text-white' 
+                } 
+            }) }}             
+            {{ form_row(registrationForm.nom, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+            {{ form_row(registrationForm.adresse, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+            {{ form_row(registrationForm.telephone, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+            {# {{ form_row(registrationForm.plainPassword, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }} #}
+            {{ form_row(registrationForm.currentPassword, { 
+                'attr': {
+                    'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'
+                }
+            }) }}
+            {{ form_row(registrationForm.plainPassword, { 
+                'attr': {
+                    'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'
+                }
+            }) }}
+            {{ form_row(registrationForm.agreeTerms, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+        </div>
+        <div class="mt-6 flex justify-between items-center">
+            <button class="bg-rose-600 hover:bg-rose-700 text-red-500 px-4 py-2 rounded-lg" type="submit">
+                Enregistrer
+            </button>
+            <a href="{{ path('app_logout') }}" class="text-sm text-red-500 hover:underline flex items-center">
+                <i class="fas fa-sign-out-alt mr-2"></i> Se déconnecter
+            </a>
+        </div>
+    {{ form_end(registrationForm) }}
+
+    <hr class="my-8 border-gray-300 dark:border-gray-600">
+
+    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Mes commandes</h2>
+
+    {% for order in orders %}
+        <div class="border p-4 rounded-lg mb-4 bg-gray-50 dark:bg-[#1f1f1f]">
+            <p class="text-sm text-gray-700 dark:text-gray-300">Commande #{{ order.id }} — {{ order.createdAt|date('d/m/Y') }}</p>
+            <p class="font-semibold text-gray-800 dark:text-white">Total : {{ order.totalInEuros|number_format(2, ',', ' ') }} €</p>
+            <p class="text-sm text-gray-500 dark:text-gray-300">Statut: 
+                <span class="font-bold text-{{ order.status == 'En cours' ? 'yellow-500' : 'green-500' }}">
+                    {{ order.status }}
+                </span>
+            </p>
+            <a href="{{ path('order_show', {id: order.id}) }}" class="text-sm text-blue-600 dark:text-roseFonce hover:underline">
+                Voir la commande
+            </a>
+        </div>
+    {% else %}
+        <p class="text-gray-600 dark:text-gray-400">Aucune commande passée pour le moment.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

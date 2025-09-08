@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des catégories - Douceurs & Snacks de Leila{% endblock %}
+
+{% block body %}
+    <section class="text-center py-5 bg-gray-100 dark:bg-stone-900">
+        <h1 class="text-3xl font-cursive text-gray-900 dark:text-gray-100">Gestion des catégories</h1>
+        <p class="text-gray-700 dark:text-gray-300">Ajoutez, modifiez ou recherchez vos catégories</p>
+    </section>
+
+    <section class="container mx-auto py-10" role="main" aria-labelledby="category-management-title">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+            <form method="get" action="{{ path('admin_index') }}" class="flex w-full md:w-1/2" role="search" aria-label="Recherche de catégorie">
+                <label for="search-category" class="sr-only">Rechercher une catégorie</label>
+                <input
+                    id="search-category"
+                    type="text"
+                    name="search"
+                    placeholder="Rechercher une catégorie..."
+                    value="{{ app.request.get('search') }}"
+                    class="flex-grow border border-gray-400 dark:border-gray-600 rounded-l px-4 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800
+                           focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-offset-1 dark:focus:ring-emerald-400 dark:focus:ring-offset-gray-900"
+                    aria-describedby="search-help"
+                >
+                <button
+                    type="submit"
+                    class="bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white px-4 py-2 rounded-r
+                           focus:outline-none focus:ring-4 focus:ring-emerald-600 focus:ring-offset-1 dark:focus:ring-emerald-500 dark:focus:ring-offset-gray-900"
+                    aria-label="Lancer la recherche de catégorie"
+                >
+                    Rechercher
+                </button>
+            </form>
+
+            <a href="{{ path('admin_category_new') }}"
+                class="bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white px-4 py-2 rounded shadow
+                       focus:outline-none focus:ring-4 focus:ring-emerald-600 focus:ring-offset-1 dark:focus:ring-emerald-500 dark:focus:ring-offset-gray-900"
+                aria-label="Ajouter une nouvelle catégorie"
+            >
+                + Ajouter une catégorie
+            </a>
+        </div>
+
+        <div class="overflow-x-auto rounded shadow" role="region" aria-labelledby="category-table-title">
+            <table class="min-w-full bg-white dark:bg-gray-800" role="table" aria-describedby="category-table-description">
+                <caption id="category-table-title" class="sr-only">Liste des catégories</caption>
+                <thead class="bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                    <tr>
+                        <th scope="col" class="text-left px-6 py-3">ID</th>
+                        <th scope="col" class="text-left px-6 py-3">Nom</th>
+                        <th scope="col" class="text-left px-6 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-800 dark:text-gray-200">
+                    {% for category in categories %}
+                        <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                            <td class="px-6 py-4">{{ category.id }}</td>
+                            <td class="px-6 py-4 font-semibold">{{ category.category }}</td>
+                            <td class="px-6 py-4 space-x-2">
+                                <a href="{{ path('admin_category_edit', { id: category.id }) }}"
+                                    class="text-amber-600 dark:text-amber-400 hover:underline focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400"
+                                    aria-label="Modifier la catégorie {{ category.category }}"
+                                >
+                                    Modifier
+                                </a>
+                                <form method="post" action="{{ path('admin_category_delete', { id: category.id }) }}" class="inline" onsubmit="return confirm('Supprimer cette catégorie ?');" aria-label="Supprimer la catégorie {{ category.category }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                    <button type="submit"
+                                        class="text-gray-700 dark:text-gray-300 hover:underline focus:outline-none focus:ring-2 focus:ring-gray-600 dark:focus:ring-gray-500"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">Aucune catégorie trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock %}

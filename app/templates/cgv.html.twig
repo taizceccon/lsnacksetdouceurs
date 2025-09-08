@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions Générales de Vente - Leila Snacks{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+        Leila Snacks & Douceurs<
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+           Des snacks raffinés et savoureux, pensés pour combler les envies les plus exigeantes!.<br>
+    </p>
+</section>
+
+<section class="px-4 mx-auto max-w-7xl py-10">
+  <h1 class="text-3xl font-bold mb-6 text-red-400">Conditions Générales de Vente</h1>
+
+  <h2 class="text-xl font-semibold mb-2">1. Objet</h2>
+  <p>Les présentes conditions régissent la vente de produits par Leila Snacks via le site leilasnacks.fr.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">2. Produits</h2>
+  <p>Les produits proposés sont décrits et présentés avec la plus grande exactitude. Toutefois, des erreurs ou omissions peuvent se produire.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">3. Prix</h2>
+  <p>Les prix sont indiqués en euros, toutes taxes comprises (TTC). Leila Snacks se réserve le droit de modifier ses prix à tout moment.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">4. Commande</h2>
+  <p>La commande est confirmée après validation du paiement. Vous recevrez un email de confirmation récapitulant votre achat.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">5. Paiement</h2>
+  <p>Les paiements sont sécurisés via Stripe. Aucune donnée bancaire n’est conservée par Leila Snacks.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">6. Livraison</h2>
+  <p>Les produits sont expédiés sous 2 à 5 jours ouvrés. Les délais peuvent varier selon la destination.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">7. Droit de rétractation</h2>
+  <p>Conformément à l’article L221-28 du Code de la consommation, les denrées périssables (alimentaires) ne sont pas soumises au droit de rétractation.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">8. Données personnelles</h2>
+  <p>Les données collectées sont utilisées uniquement pour la gestion des commandes. Elles sont traitées selon notre <a href="{{ path('mentions_legales') }}" class="text-blue-500 underline">politique de confidentialité</a>.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">9. Contact</h2>
+  <p>Pour toute question, contactez-nous à <a href="mailto:contact@leilasnacks.fr" class="text-blue-500 underline">contact@leilasnacks.fr</a>.</p>
+</section>
+{% endblock %}

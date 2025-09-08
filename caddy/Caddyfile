@@ -1,0 +1,10 @@
+# Serve HTTPS sur localhost
+localhost {
+    reverse_proxy php:80
+    tls /etc/certs/localhost+2.pem /etc/certs/localhost+2-key.pem
+}
+
+# Rediriger HTTP 8081 vers HTTPS
+:8081 {
+    redir https://localhost{uri} permanent
+}

@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contactez-nous - Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+  <meta name="robots" content="index, follow">
+{% endblock %}
+
+{% block body %}
+<!-- Bannière Contact -->
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+        Contactez-nous
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+    Une question, une commande spéciale, une demande personnalisée, un partenariat ou une simple gourmandise à partager ?<br>
+        N'hésitez pas à nous contacter !
+    </p>
+</section>
+<!-- Section Contact + Formulaire -->
+<section class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 px-4 sm:px-6">
+    <!-- Infos Contact -->
+    <div class="contact-infos space-y-6 text-rose-300">
+        <ul class="space-y-2">
+            <li><strong>Email :</strong> <a href="mailto:hello@leila-snacks.fr" class="text-rose-400 hover:underline">hello@leila-snacks.fr</a></li>
+            <li><strong>Téléphone :</strong> <a href="tel:+33123456789" class="text-rose-400 hover:underline">01 23 45 67 89</a></li>
+            <li><strong>Adresse :</strong> 27 rue Henri Barbusse - 93410 Vaujours</li>
+        </ul>
+        <div>
+            <h3 class="text-lg font-semibold mt-6">Horaires</h3>
+            <p>Lundi - Vendredi : 9h00 - 18h00<br>Samedi : 10h00 - 14h00</p>
+        </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="contact-form bg-crème dark:bg-fondDark dark:text-texteClair p-10 rounded-2xl shadow-lg max-w-full mx-auto">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mb-6 rounded bg-green-100 p-4 text-green-700 font-semibold" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {{ form_start(form, {attr: {'aria-labelledby': 'contact-heading'}}) }}
+        
+        {% for field in [form.nom, form.email, form.sujet, form.message] %}
+            <div class="form-group mb-6">
+                {{ form_label(field, null, {'label_attr': {'class': 'font-semibold'}}) }}
+                {{ form_widget(field, {
+                    'attr': {
+                        'class': 'border border-rose rounded w-full p-3 focus:outline-none focus:ring-2 focus:ring-rose-400 dark:bg-fondDark dark:text-texteClair',
+                        'aria-required': 'true',
+                        'aria-invalid': field.vars.errors|length > 0 ? 'true' : 'false'
+                    }
+                }) }}
+                {{ form_errors(field) }}
+            </div>
+        {% endfor %}
+
+        <!-- Consentement RGPD -->
+        <div class="form-group mb-6 flex items-start">
+            {{ form_widget(form.rgpdConsent, {
+                'attr': {
+                    'aria-required': 'true',
+                    'class': 'mr-2 mt-1 h-4 w-4'
+                }
+            }) }}
+            {{ form_label(form.rgpdConsent, "J'accepte que mes données soient utilisées pour répondre à ma demande.", {
+                'label_attr': {'class': 'text-sm select-none'}
+            }) }}
+            {{ form_errors(form.rgpdConsent) }}
+        </div>
+
+        <!-- Bouton -->
+        <div class="form-group text-center mt-6">
+            {{ form_widget(form.envoyer, {
+                'label': 'Envoyer mon message',
+                'attr': {
+                    'class': 'bg-rose-400 hover:bg-roseFonce text-white px-6 py-3 rounded-full cursor-pointer transition duration-200',
+                    'aria-label': 'Envoyer mon message via le formulaire de contact'
+                }
+            }) }}
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+</section>
+{% endblock %}

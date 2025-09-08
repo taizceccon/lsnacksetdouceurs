@@ -1,0 +1,25 @@
+# Docker / PHP / Symfony
+/var/
+/vendor/
+/node_modules/
+/public/build/
+/.env.local
+
+# Database / runtime files
+/mysql/*
+!/mysql/.gitkeep
+/mongodb/*
+!/mongodb/.gitkeep
+
+# Sublime / VSCode / IDE files
+/.vscode/
+/.DS_Store
+
+# Ignore embedded git repositories
+/app/.git
+
+# Ignore the embedded app repo
+/app/.env
+app/.env.local
+app/.env.local
+.env

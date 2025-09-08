@@ -1,0 +1,44 @@
+<footer class="bg-roseFonce dark:bg-roseFonce text-white text-sm pt-6 pb-3 border-t border-[#EDCC8B] transition-colors duration-300">
+  <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-8">
+    <!-- Newsletter -->
+    <div>
+      <h2 class="text-xl font-semibold text-[#FFD37F] dark:text-[#EDCC8B] mb-4">Leila Snacks & Douceurs</h2>
+      <p class="mb-4">Commandez en créant votre compte.</p>
+      <form action="/register" method="post" class="flex flex-col sm:flex-row gap-2 mb-4">
+        <label for="footer-email" class="sr-only">Adresse email</label>
+        <input id="footer-email" type="email" name="email" placeholder="Votre email" autocomplete="email" aria-label="Votre adresse email pour s’inscrire"
+               class="px-3 py-2 rounded-md border border-[#EDCC8B] text-sm text-black dark:text-white bg-white dark:bg-[#333] focus:outline-none focus:ring-2 focus:ring-[#5EC8C2] w-full sm:w-auto">
+        <button type="submit" class="bg-menthe text-white px-4 py-2 rounded-md hover:bg-roseFonce dark:hover:bg-EDCC8B transition-all duration-300 w-full sm:w-auto" aria-label="S’inscrire à la newsletter">
+          S'inscrire
+        </button>
+      </form>
+    </div>
+
+    <!-- Aide & Support -->
+    <div>
+      <h2 class="text-xl font-semibold text-[#FFD37F] dark:text-[#EDCC8B] mb-4">Aide & Support</h2>
+      <ul class="space-y-2">
+        <li><a href="{{ path('app_faq') }}" class="footer-link">FAQ</a></li>
+        <li><a href="/contact" class="footer-link">Contact</a></li>
+        <li><a href="/orders" class="footer-link">Suivi de commande</a></li>
+      </ul>
+    </div>
+
+    <!-- Infos légales -->
+    <div>
+      <h2 class="text-xl font-semibold text-[#FFD37F] dark:text-[#EDCC8B] mb-4">Informations légales</h2>
+      <ul class="space-y-2">
+        <li><a href="{{ path('mentions_legales') }}" class="footer-link">Mentions légales</a></li>
+        <li><a href="{{ path('cgv') }}" class="footer-link">Conditions générales de vente (CGV)</a></li>
+        <li><a href="/avis" class="footer-link">Avis</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-6 text-center text-sm border-t border-[#EDCC8B] pt-2 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+    <span>© {{ "now"|date("Y") }} Leila Snacks & Douceurs. Tous droits réservés.</span>
+    <span>Suivez-nous:</span>
+    <a href="https://facebook.com/leilasd" target="_blank" aria-label="Facebook"><img src="/images/logo-fb.webp" alt="Facebook Leila Snacks et Douceurs" width="20" height="20"></a>
+    <a href="https://instagram.com/leilasd" target="_blank" aria-label="Instagram"><img src="/images/insta.webp" alt="Instagram Leila Snacks et Douceurs" width="22" height="22"></a>
+  </div>
+</footer>

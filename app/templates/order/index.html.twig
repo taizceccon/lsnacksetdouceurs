@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des commandes{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Commandes - Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+<meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<!-- Bannière -->
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+        Leila Snacks & Douceurs
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+        Des délices sucrés d’exception, pensés pour combler les palais les plus raffinés.
+    </p>
+</section>
+
+<!-- Liste des commandes -->
+<section class="container mx-auto py-10 px-4 sm:px-6">
+    <h1 class="text-3xl font-bold text-center mb-6 text-roseFonce dark:text-jaunePale">Liste des commandes</h1>
+
+    <div class="overflow-x-auto rounded-lg shadow border border-gray-300 dark:border-gray-700">
+        <table class="min-w-full table-auto border-collapse">
+            <thead class="bg-rose-200 dark:bg-rose-800 text-rose-900 dark:text-rose-100">
+                <tr>
+                    <th class="p-4 border text-left">ID</th>
+                    <th class="p-4 border text-left">Client</th>
+                    <th class="p-4 border text-left">Total</th>
+                    <th class="p-4 border text-left">Date</th>
+                    <th class="p-4 border text-left">Status</th>
+                    <th class="p-4 border text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr class="bg-rose-50 dark:bg-rose-900 hover:bg-rose-100 dark:hover:bg-rose-800 transition text-rose-900 dark:text-rose-100">
+                        <td class="p-4 border">{{ order.id }}</td>
+                        <td class="p-4 border">{{ order.user.email }}</td>
+                        <td class="p-4 border font-semibold text-green-700 dark:text-green-400">{{ order.totalInEuros|number_format(2, ',', ' ') }} €</td>
+                        <td class="p-4 border">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                        <td class="p-4 border">{{ order.status }}</td>
+                        <td class="p-4 border">
+                            <a href="{{ path('order_show', {'id': order.id}) }}" class="text-rose-700 dark:text-rose-200 hover:underline transition duration-300">
+                                Voir
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="p-4 text-center text-gray-500 dark:text-gray-400">
+                            Aucune commande trouvée.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Snacks, sucreries… Commandez ce que vous aimez !{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Commandes - Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+<section class="container mx-auto py-10 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    {# PANIER EN PREMIER SUR MOBILE #}
+    <aside class="order-1 md:order-2 bg-white dark:bg-[#1e1e1e] text-gray-900 dark:text-gray-200 p-6 rounded shadow border-gray-200 dark:border-gray-700 h-fit sticky top-4">
+        <h2 class="text-2xl font-bold mb-4 text-rose-600 dark:text-rose-400">Votre Panier</h2>
+
+        {% if cart is empty %}
+            <p class="text-gray-500 dark:text-gray-400">Le panier est vide.</p>
+        {% else %}
+            <ul class="space-y-4 mb-4">
+               {% for item in cart %}
+                  <li class="cart-item flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded shadow" data-id="{{ item.product.id }}">
+                    <div class="mb-2 sm:mb-0">
+                        <strong>{{ item.product.titre }}</strong><br>
+                        Quantité :
+                        <form class="form-update inline-flex items-center gap-2 mt-1" data-id="{{ item.product.id }}">
+                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 w-16 border rounded px-2 py-1">
+                            <button type="submit" class="px-3 py-1 bg-red-300 hover:bg-red-400 text-white rounded font-semibold" title="Modifier">
+                                <i class="fas fa-pen-to-square mr-2"></i>
+                            </button>
+                        </form>
+                        <button type="button" class="btn-remove px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded font-semibold ml-2 mt-2 sm:mt-0" data-id="{{ item.product.id }}" title="Supprimer">
+                            <i class="fas fa-trash-alt mr-2"></i>
+                        </button>
+                    </div>
+                    <div class="text-right">
+                        <p class="mb-2 item-subtotal">{{ (item.product.prix * item.quantity / 100)|number_format(2, ',', ' ') }} €</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <p class="text-xl font-semibold text-right mb-4">Total : <span id="cart-total">{{ (total / 100)|number_format(2, ',', ' ') }}</span> €</p>
+
+            <form action="{{ path('checkout') }}" method="POST">
+                <button class="bg-emerald-600 hover:bg-emerald-300 text-white font-semibold px-6 py-2 rounded w-full">
+                <i class="fas fa-credit-card mr-2"></i>Payer</button>                
+            </form>        
+        {% endif %}
+    </aside>
+
+    {# PRODUITS EN DESSOUS SUR MOBILE, À GAUCHE SUR TABLETTE+ #}
+    <div class="order-2 md:order-1 md:col-span-2">
+        <h1 class="text-3xl font-bold text-center text-red-400 mb-8">Vos envies sucrées et salées, en quelques clics!</h1>
+
+        <div class="dark:bg-[#1e1e1e] dark:text-gray-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for product in products %}
+                <div class="bg-white dark:bg-[#1e1e1e] dark:text-gray-200 p-4 rounded shadow text-center hover:shadow-lg transition">
+                    {% if product.image %}
+                        <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" class="mx-auto rounded mb-4" width="250" height="180">
+                    {% endif %}
+                    <h2 class="text-xl font-semibold mb-2">{{ product.titre }}</h2>
+                    <p class="text-sm mb-2">
+                        {{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}
+                    </p>
+                    <p class="text-green-600 font-bold mb-4">
+                        {{ (product.prix / 100)|number_format(2, ',', ' ') }} € / Unité
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row justify-center gap-2 mt-2">
+                        <form action="{{ path('cart_add') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="bg-red-300 hover:bg-red-400 text-white font-semibold px-4 py-2 rounded w-full sm:w-auto" title="Ajouter au panier">
+                                <i class="fas fa-basket-shopping mr-2"></i> Ajouter
+                            </button>
+                        </form>
+
+                        {# <form action="{{ path('stripe_test_checkout', { id: product.id }) }}" method="POST">
+                            <button type="submit" class="bg-emerald-400 hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded w-full sm:w-auto" title="Payer">
+                                <i class="fas fa-credit-card mr-2"></i> Payer
+                            </button>
+                        </form> #}
+                    </div>
+                </div>
+            {% else %}
+                <p class="col-span-3 text-center text-gray-500">Aucun produit disponible.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</section>
+
+<script>
+const csrfToken = '{{ csrf_token('remove_cart') }}';
+
+document.querySelectorAll('.btn-remove').forEach(button => {
+    button.addEventListener('click', function () {
+        const productId = this.dataset.id;
+        if (confirm('Voulez-vous vraiment supprimer ce produit du panier ?')) {
+            fetch('/cart/remove/' + productId, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const itemDiv = document.querySelector(`.cart-item[data-id="${productId}"]`);
+                    if (itemDiv) itemDiv.remove();
+                    const totalElem = document.getElementById('cart-total');
+                    if (totalElem && data.total !== undefined) {
+                        totalElem.textContent = data.total;
+                    }
+                    alert('Produit supprimé du panier.');
+                } else {
+                    alert('Erreur: ' + (data.message || 'Impossible de supprimer ce produit.'));
+                }
+            })
+            .catch(() => alert('Erreur réseau.'));
+        }
+    });
+});
+
+document.querySelectorAll('.form-update').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const productId = this.dataset.id;
+        const quantity = this.querySelector('input[name="quantity"]').value;
+
+        fetch(`/cart/update/${productId}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `quantity=${encodeURIComponent(quantity)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const totalElem = document.getElementById('cart-total');
+                if (totalElem && data.total !== undefined) {
+                    totalElem.textContent = data.total;
+                }
+
+                const itemElem = document.querySelector(`.cart-item[data-id="${productId}"]`);
+                if (itemElem && data.subtotal !== undefined) {
+                    itemElem.querySelector('.item-subtotal').textContent = data.subtotal + ' €';
+                }
+
+                alert('Quantité mise à jour.');
+            } else {
+                alert('Erreur : ' + (data.message || 'Impossible de mettre à jour la quantité.'));
+            }
+        })
+        .catch(() => alert('Erreur réseau.'));
+    });
+});
+</script>
+{% endblock %}

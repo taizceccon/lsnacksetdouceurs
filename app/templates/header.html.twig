@@ -1,0 +1,102 @@
+<header class="bg-creme dark:bg-fondDark">
+
+    <!-- MOBILE: Version responsive spécifique -->
+    <div class="md:hidden flex flex-col items-center text-center space-y-4 w-full">
+
+      <!-- Logo centré -->
+      <a href="{{ path('app_home') }}">
+        <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" loading="lazy" width="180"  height="180" class="mx-auto rounded" />
+      </a>
+
+      <!-- Bouton burger -->
+      <button id="burger-button" aria-expanded="false" aria-controls="mobile-menu" class="hover:text-bleuMenthe transition" aria-label="Ouvrir le menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" role="img" aria-hidden="true">
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="18" x2="20" y2="18" />
+        </svg>
+      </button>
+
+      <!-- Menu mobile déroulant -->
+        <nav id="mobile-menu" role="navigation" aria-label="Menu principal" class="hidden md:hidden flex-col items-center px-6 py-4 space-y-3 text-center">
+            <ul class="space-y-3">
+                <li><a href="{{ path('category_snacks') }}" class="header-link">Snacks</a></li>
+                <li><a href="{{ path('category_douceurs') }}" class="header-link">Douceurs</a></li>
+                <li><a href="{{ path('category_packs') }}" class="header-link">Packs & Coffrets</a></li>
+                <li><a href="{{ path('app_about') }}" class="header-link">Qui sommes-nous</a></li>
+                <li><a href="{{ path('app_contact') }}" class="header-link">Contact</a></li>
+            </ul>
+        </nav>
+
+    </div>
+
+    <div class="container mx-auto px-4 flex items-center justify-between">
+
+      <!-- Logo desktop -->
+      <a href="{{ path('app_home') }}" class="flex-shrink-0 hidden md:block" aria-label="Page d'accueil">
+        <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" loading="lazy" width="150" height="150"  class="mx-auto rounded mb-2" />
+      </a>
+
+      <!-- Menu principal desktop -->
+      <nav role="navigation" aria-label="Menu principal" class="w-full p-0 m-0 hidden md:flex flex-1 justify-center items-center space-x-6 font-medium">
+       <ul class="flex space-x-6">
+          <li><a href="{{ path('category_snacks') }}" class="header-link dark:text-jaunePale">Snacks</a></li>
+          <li><a href="{{ path('category_douceurs') }}" class="header-link dark:text-jaunePale">Douceurs</a></li>
+          <li><a href="{{ path('category_packs') }}" class="header-link dark:text-jaunePale ">Packs & Coffrets</a></li>
+          <li><a href="{{ path('app_about') }}" class="header-link dark:text-jaunePale ">Qui sommes-nous</a></li>
+          <li><a href="{{ path('app_contact') }}" class="header-link dark:text-jaunePale">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Zone droite (desktop) -->
+      <div class="flex items-center space-x-4 text-vertSauge">
+      <form method="get" action="{{ path('app_home') }}" class="bg-white dark:bg-[#4A403D] flex items-center dark:border-[#4A403D] rounded-xl transition-all duration-300 ease-in-out">
+          <label for="search-input" class="sr-only">Rechercher</label>
+          <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="dark:bg-[#333] border border-gray-300 dark:border-[#4A403D] rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-rose-300" />
+            <button type="submit" class="bg-white dark:bg-[#333]  rounded-r px-2 py-1 flex items-center justify-center">
+              <img src="/images/search.webp" alt="Rechercher" loading="lazy" aria-label="Rechercher" width="30" height="30" class="w-5 h-5 md:w-6 md:h-6 dark:bg-[#333] block" />
+            </button>
+        </form>
+
+        {% if app.user %}
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin_index') }}" class="flex items-center space-x-2 text-red-700 hover:underline transition" aria-label="Accès administrateur">
+                <i class="fas fa-user-shield mr-1"></i><span>Admin</span>
+            </a>
+        {% else %}
+            <a href="{{ path('app_user_dashboard') }}" class="flex items-center space-x-2 text-red-700 hover:underline transition" aria-label="Mon compte">
+              <i class="fas fa-user-circle mr-1"></i>
+            </a>
+        {% endif %}
+       
+         <a href="{{ path('app_user_dashboard') }}" class="flex items-center space-x-2 text-emerald-600 hover:underline transition">
+            {{ app.user.email }} </a>
+         <form action="{{ path('app_logout') }}" method="POST">
+           <button type="submit" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition w-6 h-6 md:w-6 md:h-6" aria-label="Se déconnecter">
+           <img src="/images/logout.webp" alt="Se déconnecter" loading="lazy" width="50" height="50" class="w-full h-full" />
+           </button>
+         </form>
+
+        {% else %}
+        <a href="{{ path('app_login') }}" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition">
+          <img src="/images/login.webp" alt="Se connecter" loading="lazy" width="50" height="50" class="w-8 h-8 md:w-8 md:h-8" />
+        </a>
+        {% endif %}
+
+        <!-- Panier avec compteur -->
+        <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition" aria-label="Mon panier">
+          <img src="/images/panier-vide.webp" alt="Mon panier" loading="lazy" width="60" height="50" class="w-8 h-8 md:w-10 md:h-10" />
+          <span id="cart-count" aria-live="polite" class="absolute top-0 right-0 bg-roseFonce text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-bold {{ cartItemCount == 0 ? 'hidden' : '' }}">{{ cartItemCount }}</span>
+        </a>
+
+        <button id="theme-toggle" aria-label="Changer de thème" aria-pressed="false"
+          class="w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-[#333] shadow-md transition text-black dark:text-white">
+          <span id="theme-icon" class="text-lg">🌙</span>
+        </button>
+
+      </div>
+
+    </div>
+     
+  </header>

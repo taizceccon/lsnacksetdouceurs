@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Snacks & Douceurs Artisanaux - Leila{% endblock %}
+
+{% block meta %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks & Douceurs  Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-16 sm:py-20 text-center rounded-md mb-12 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+        Douceurs & snacks de Leila 
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+      Des saveurs de fait maison pour tous les moments – faites avec amour et une touche spéciale de Leila
+    </p>
+</section>
+
+<section class="px-4 mx-auto max-w-7xl py-10">
+    <h1 class="text-3xl font-cursive text-center mb-10">Nos Produits:</h1>
+    {% for category in categories %}
+        <h2 class="text-2xl font-bold mb-6">{{ category.category }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {% for product in category.products %}
+                <div class="bg-white rounded shadow p-4 text-center hover:shadow-lg transition">
+                    <a href="{{ path('product_show', {'id': product.id}) }}">                    
+                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer"
+     width="300" height="200">
+                        <h3 class="font-bold hover:underline cursor-pointer">{{ product.titre }}</h3>
+                    </a>
+                    <p class="text-sm">{{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}</p>
+                    <p class="text-green-600 font-semibold mt-2">
+                    <p>Prix : {{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité </p>
+                </div>
+            {% else %}
+                <p>Aucun produit dans cette catégorie.</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucune catégorie disponible.</p>
+    {% endfor %}
+</section>
+{% endblock %}
+

@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Douceurs & Snacks de Leila{% endblock %}
+
+{% block meta %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Découvrez les snacks et douceurs artisanales de Leila, faits maison avec amour pour tous vos moments gourmands.">
+<meta property="og:title" content="Snacks Artisanaux - Leila" />
+<meta property="og:image" content="{{ asset('images/logo.webp') }}" />
+<meta property="og:description" content="Explorez les meilleures snacks et douceurs faits maison avec un goût unique de Leila." />
+<meta name="robots" content="index, follow">
+{% endblock %}
+
+{% block body %}
+
+<!-- Section titre -->
+<section class="banner-contact bg-roseFonce dark:bg-roseFonce py-6 sm:py-20 text-center rounded-md mb-0 px-4 sm:px-6">
+    <h1 id="contact-heading" class="text-4xl sm:text-5xl font-script text-rose-100 dark:text-[#EDCC8B] mb-4">
+        Snacks & Douceurs de Leila
+    </h1>
+    <p class="max-w-3xl mx-auto text-lg sm:text-xl text-rose-100 dark:text-[#EDCC8B]">
+        Des saveurs faites maison pour tous les moments – faites avec amour et une touche spéciale de Leila.
+    </p>
+</section>
+
+<!-- Section produits -->
+<section class="px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl py-6">
+    {% set products = isSearch ? searchResults : randomProducts %}
+    {% if products is empty %}
+        <p class="text-center text-gray-600 dark:text-gray-400">Aucun produit disponible.</p>
+    {% else %}
+        {% if isSearch %}
+            <p class="text-2xl font-bold text-center mb-6 dark:text-gray-200">Résultats de la recherche</p>
+        {% endif %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for product in products %}
+            <div class=" dark:bg-[#33231b] rounded-xl shadow-md hover:shadow-xl transition p-4 flex flex-col items-center text-center">
+                
+                {% if product.image %}
+                <a href="{{ path('product_show', {'id': product.id}) }}" aria-label="Voir {{ product.titre }}">
+                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="Image de {{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded-lg mb-4 w-full h-48 object-cover transform hover:scale-105 transition duration-300">
+                </a>
+                {% else %}
+                <span class="text-gray-400 italic mb-4">Pas d'image</span>
+                {% endif %}
+
+                <h2 class="mb-2"> <a href="{{ path('product_show', {'id': product.id}) }}" class="font-sans font-bold text-lg md:text-xl  text-vertSauge dark:text-jaunePale hover:underline hover:text-roseFonce dark:hover:text-menthe
+                                transition-colors duration-200">
+                        {{ product.titre }} </a></h2>
+
+                <h3 class="text-sm md:text-base mb-2 text-gray-700 dark:text-jaunePale">{{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}</h3>
+
+                {% if product.urlvideo %}
+                <a href="{{ product.urlvideo }}" target="_blank" rel="noopener noreferrer" class="text-green-500 underline block mb-2">Voir la vidéo</a>
+                {% endif %}
+
+                <form action="{{ path('cart_add') }}" method="POST" class="mt-auto w-full flex flex-col items-center">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <p class="text-green-600 font-semibold mb-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
+                    <label for="quantity-{{ product.id }}" class="sr-only">Quantité pour {{ product.titre }}</label>
+                    <input id="quantity-{{ product.id }}" type="number" name="quantity" value="1" min="1" aria-label="Quantité pour {{ product.titre }}" class="dark:bg-[#3A322F] dark:text-gray-200 border rounded w-20 text-center mb-2 focus:ring-2 focus:ring-rose-300 focus:outline-none transition">
+                    <button type="submit" aria-label="Ajouter {{ product.titre }} au panier" class="btn">
+                        <i class="fas fa-basket-shopping mr-2" aria-hidden="true"></i>Ajouter
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

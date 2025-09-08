@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Leila Snacks & Douceurs – Merci pour votre commande !{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Douceurs Artisanaux - Leila" />
+{% endblock %}
+
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="max-w-md mx-auto bg-white rounded shadow p-6 text-center">
+    <h1 class="text-3xl font-bold text-rose-800 mb-8">✅ Paiement effectué avec succès !!</h1>
+    <p class="mb-4 text-lg">Merci pour votre achat chez Leila Snacks & Douceurs !</p>
+    <p class="text-gray-700">Nous prendrons contact avec vous très prochainement pour finaliser votre commande.</p>
+    <a href="{{ path('order_index') }}" class="inline-block mt-6 px-6 py-2 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded shadow transition">
+                Voir mes commandes </a>
+           
+</div>
+{% endblock %}

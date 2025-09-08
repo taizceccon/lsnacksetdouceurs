@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Donnez votre avis - Douceurs & Snacks de Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Laissez ton avis">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+<section class="banner-contact bg-rose-150 py-12 text-center rounded-md mb-10 shadow-md">
+    <h1 class="text-5xl mb-3" style="font-family: 'Buffalo', cursive;">Donnez votre avis</h1>
+    <p class="text-rose-900 text-lg max-w-xl mx-auto">Votre avis compte pour nous – partagez vos impressions sucrées et salées et aidez-nous à nous améliorer !</p>
+</section>
+
+<section class="max-w-lg mx-auto bg-white dark:bg-[#1b1b1b] dark:text-[#f3f3f3] shadow-xl rounded-xl p-10">
+
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border border-green-400 text-green-800 px-5 py-3 rounded mb-6 font-semibold">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+        {{ form_errors(form) }}
+
+        {{ form_row(form.nom, {'attr': {'class': 'w-full rounded-md border border-rose-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#2b2b2b] dark:border-gray-600 dark:text-white'}}) }}
+
+        {{ form_row(form.email, {'attr': {'class': 'w-full rounded-md border border-rose-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#2b2b2b] dark:border-gray-600 dark:text-white'}}) }}
+
+        {{ form_row(form.message, {'attr': {'class': 'w-full rounded-md border border-rose-300 px-4 py-2 h-32 resize-y focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#2b2b2b] dark:border-gray-600 dark:text-white'}}) }}
+
+        <button type="submit" class="w-full bg-green-600 hover:bg-rose-500 text-white font-semibold py-3 rounded-md transition-colors duration-300">
+            Envoyer mon avis
+        </button>
+
+    {{ form_end(form) }}
+
+    <p class="mt-4 text-sm text-center text-gray-600 dark:text-gray-400 italic">
+        Votre avis sera vérifié par notre équipe avant publication.
+    </p>
+
+</section>
+
+{% endblock %}

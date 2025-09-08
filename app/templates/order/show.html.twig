@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Liste de Commandes{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Douceurs Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+    <div class="container mx-auto px-4 py-6">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">Détails de la Commande #{{ order.id }}</h1>
+
+        <div class="bg-white dark:bg-[#2c2c2c] text-gray-900 dark:text-gray-300 shadow-lg rounded-lg p-6 mb-6 border border-gray-300 dark:border-gray-600">
+            <table class="min-w-full table-auto border-collapse">
+                <tbody>
+                    <tr class="border-b border-gray-300 dark:border-gray-600">
+                        <th class="p-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Produit</th>
+                        <td class="p-4 text-sm text-gray-800 dark:text-gray-300">
+                            <ul>
+                                {% for item in order.orderItems %}
+                                    <li>{{ item.product.titre }} - {{ item.quantity }} x {{ (item.subtotal / 100)|number_format(2, ',', ' ') }}€</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-300 dark:border-gray-600">
+                        <th class="p-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Date de la commande</th>
+                        <td class="p-4 text-sm text-gray-800 dark:text-gray-300">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-300 dark:border-gray-600">
+                        <th class="p-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Total</th>
+                        <td class="p-4 text-sm text-gray-800 dark:text-gray-300">{{ order.totalInEuros|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                    <tr class="border-b border-gray-300 dark:border-gray-600">
+                        <th class="p-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Status</th>
+                        <td class="p-4 text-sm text-gray-800 dark:text-gray-300">{{ order.status }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-between items-center mt-6">
+            <a href="{{ path('order_index') }}" class="bg-rose-500 text-white px-6 py-2 rounded-md hover:bg-rose-600 transition duration-300">
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}

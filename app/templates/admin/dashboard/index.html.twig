@@ -1,0 +1,303 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs - Admin{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <header class="flex items-center justify-between mb-8" role="banner">
+      <h1 class="text-3xl font-bold dark:text-white" id="dashboard-title">Tableau de bord Admin</h1>
+      <h2 class="text-gray-600 dark:text-gray-300" aria-describedby="dashboard-title">Bienvenue sur votre tableau de bord administrateur !</h2>
+    </header>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        
+        <div class="bg-emerald-600 dark:bg-emerald-500 text-white p-6 rounded-lg shadow hover:shadow-xl transition" aria-labelledby="product-count">
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-1" id="product-count">
+                    <a href="{{ path('admin_products_index') }}" aria-label="Voir toutes les Utilisateurs">
+                    <i class="fas fa-box" aria-hidden="true"></i> Produits </a>
+                </h3>
+                <p class="text-3xl font-bold" aria-live="polite">{{ productCount }}</p>
+            </div>
+        </div>
+        
+        <div class="bg-pink-600 dark:bg-pink-500 text-white p-6 rounded-lg shadow hover:shadow-xl transition" aria-labelledby="category-count">
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-1" id="category-count">
+                <a href="{{ path('admin_category_index') }}" aria-label="Voir toutes les Utilisateurs">
+                    <i class="fas fa-tags" aria-hidden="true"></i> Catégories</a>
+                </h3>
+                <p class="text-3xl font-bold" aria-live="polite">
+                  <a href="{{ path('admin_category_index') }}" aria-label="Voir toutes les Utilisateurs">
+                     {{ categoryCount }} </a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="bg-teal-600 dark:bg-teal-500 text-white p-6 rounded-lg shadow hover:shadow-xl transition" aria-labelledby="client-count">
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-1" id="client-count">
+                <a href="{{ path('admin_users') }}" aria-label="Voir toutes les Utilisateurs">
+                    <i class="fas fa-users" aria-hidden="true"></i> Utilisateurs</a>
+                </h3>
+                <p class="text-3xl font-bold" aria-live="polite">
+                <a href="{{ path('admin_users') }}" aria-label="Voir toutes les Utilisateurs">
+                {{ userCount  }}</a></p>
+            </div>
+        </div>
+
+        <div class="bg-pink-500 dark:bg-pink-300 text-white p-6 rounded-lg shadow hover:shadow-xl transition" aria-labelledby="order-count">
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-1" id="order-count">
+                <a href="{{ path('admin_order_index') }}" aria-label="Voir toutes les commandes">
+                    <i class="fas fa-box" aria-hidden="true"></i>
+                     Commandes </a>
+                </h3>
+                <a href="{{ path('admin_order_index') }}" aria-label="Voir toutes les commandes">
+                <p class="text-3xl font-bold" aria-live="polite">{{ orderCount }}</p></a>
+            </div>
+        </div>
+
+       <div class="bg-teal-600 dark:bg-teal-500 text-white p-6 rounded-lg shadow hover:shadow-xl transition" aria-labelledby="mailpit-link">
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-1" id="mailpit-link">
+                <a href="http://localhost:8025/" aria-label="Accéder à la boîte Mailpit">
+                    <i class="fas fa-envelope" aria-hidden="true"></i> Boîte Mail
+                </a>
+            </h3>  
+            <a href="http://localhost:8025/" aria-label="Accéder à la boîte Mailpit">
+            <p class="text-1xl font-bold" aria-live="polite">Mailpit</p></a>
+         </div>
+       </div>
+
+       <div class="bg-pink-500 dark:bg-pink-300 text-white p-6 rounded-lg shadow hover:shadow-xl transition" aria-labelledby="avis-link">
+         <div>
+            <h3 class="text-lg font-semibold text-white mb-1" id="avis-link">
+            <a href="{{ path('admin_avis_index') }}" aria-label="Voir les avis du site">
+                <i class="fas fa-comment" aria-hidden="true"></i> Avis site
+            </a>
+            </h3>
+            <a href="{{ path('admin_avis_index') }}" aria-label="Voir les avis du site">
+              <p class="text-3xl font-bold" aria-live="polite">{{ avisCount }}</p>
+            </a>    
+         </div>
+        </div>
+    </div>
+
+     {# USER #}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+   <div class="mt-12">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white" id="Utilisateurs">Utilisateurs</h2>
+           </div>
+         <div class="overflow-x-auto rounded-lg shadow ring-1 ring-black/5 dark:ring-white/10">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-stone-700 text-sm text-gray-900 dark:text-gray-100">
+            <thead class="bg-gray-100 dark:bg-stone-700">
+                <tr>
+                <th class="px-4 py-3 text-left">ID</th>
+                <th class="px-4 py-3 text-left">Email</th>
+                <th class="px-4 py-3 text-left">Nom</th>
+                <th class="px-4 py-3 text-left">Adresse</th>
+                <th class="px-4 py-3 text-left">Téléphone</th>
+                <th class="px-4 py-3 text-left">Rôles</th>
+                <th class="px-4 py-3 text-left">Actions</th>
+                <th class="px-4 py-3 text-left">Anonymisé</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-stone-800 divide-y divide-gray-200 dark:divide-stone-700">
+                {% for user in users %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-stone-700">
+                    <td class="px-4 py-2">{{ user.id }}</td>
+                    <td class="px-4 py-2">{{ user.email }}</td>
+                    <td class="px-4 py-2">{{ user.nom }}</td>
+                    <td class="px-4 py-2">{{ user.adresse ?? '-' }}</td>
+                    <td class="px-4 py-2">{{ user.telephone ?? '-' }}</td>
+                    <td class="px-4 py-2">{{ user.roles|join(', ') }}</td>
+                    <td class="px-4 py-2 flex space-x-2">
+                    <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="text-yellow-500 hover:text-yellow-600 transition"><i class="fas fa-edit"></i></a>
+                    <a href="{{ path('admin_user_show', {id: user.id}) }}" class="text-blue-500 hover:text-blue-600 transition"><i class="fas fa-eye"></i></a>
+                    <form method="post" action="{{ path('admin_user_delete', {id: user.id}) }}" class="inline-flex" onsubmit="return confirm('Confirmer la suppression ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                        <button class="text-red-500 hover:text-red-600 transition bg-transparent border-none" title="Supprimer">
+                        <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                    </td>
+                    <td class="px-4 py-2">{% if user.isAnonymized %}<span class="text-gray-500 italic">Anonymisé</span>{% else %}{{ user.email }}{% endif %}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="text-center px-4 py-6 text-gray-500 dark:text-gray-400">Aucun utilisateur trouvé.</td></tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+</section>
+
+    {# COMMANDES #}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="mt-12">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+               <a href="{{ path('admin_order_index') }}" class="text-white px-4 py-2 rounded-md text-sm font-semibold transition shadow" aria-label="Voir toutes les commandes">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" id="orders-title">Commandes</h3>                
+              </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-lg shadow-md" role="table">
+                    <thead class="bg-gray-100 dark:bg-gray-800">
+                        <tr>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white uppercase tracking-wider" scope="col">Numéro de commande</th>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white uppercase tracking-wider" scope="col">Date</th>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white uppercase tracking-wider" scope="col">Utilisateur</th>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white uppercase tracking-wider" scope="col">Statut</th>
+                            <th class="text-center py-3 px-6 font-semibold text-gray-900 dark:text-white uppercase tracking-wider" scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr class="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition" role="row">
+                                <td class="py-4 px-6 text-gray-900 dark:text-white font-medium" role="cell">{{ order.id }}</td>
+                                <td class="py-4 px-6 text-gray-900 dark:text-white" role="cell">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                                <td class="py-4 px-6 text-gray-900 dark:text-white" role="cell">{{ order.user.email }}</td>
+                                <td class="py-4 px-6 text-gray-900 dark:text-white" role="cell">{{ order.status }}</td>
+                                <td class="py-4 px-6 text-center space-x-2" role="cell">                              
+                                    <a href="{{ path('admin_order_show', {'id': order.id}) }}" class="text-blue-600 hover:text-blue-800 mr-4">Voir</a>
+                                    <a href="{{ path('admin_order_show', {'id': order.id}) }}" class="text-green-600 hover:text-green-800">Modifier</a>                                   
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr role="row">
+                                <td colspan="4" class="py-6 text-center text-gray-600 dark:text-gray-300" role="cell">Aucune commande trouvée.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="mt-12">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" id="categories-title">Catégories</h3>
+                <form method="get" action="{{ path(app.request.attributes.get('_route')) }}" class="flex items-center space-x-2" aria-labelledby="categories-title">
+                    <label for="category-search" class="sr-only">Rechercher une catégorie</label>
+                    <input type="text" id="category-search" name="search" placeholder="Rechercher une catégorie..." value="{{ app.request.get('search') }}" class="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-emerald-500 w-64 dark:bg-gray-800 dark:text-white" aria-describedby="category-search-helper">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-md text-sm font-semibold transition" aria-label="Rechercher une catégorie">
+                        <i class="fas fa-search" aria-hidden="true"></i> Rechercher
+                    </button>
+                </form>
+                <a href="{{ path('admin_category_new') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition shadow" aria-label="Ajouter une nouvelle catégorie">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Nouvelle Catégorie
+                </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-lg shadow-md" role="table">
+                    <thead class="bg-gray-100 dark:bg-gray-800">
+                        <tr>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white tracking-wider" scope="col">Catégorie</th>
+                            <th class="text-center py-3 px-6 font-semibold text-gray-900 dark:text-white tracking-wider" scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr class="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition" role="row">
+                                <td class="py-4 px-6 text-gray-900 dark:text-white font-medium" role="cell">{{ category.category }}</td>
+                                <td class="py-4 px-6 text-center space-x-2" role="cell">
+                                <a href="{{ path('admin_category_edit', {'id': category.id}) }}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-sm transition" aria-label="Modifier la catégorie {{ category.category }}">
+                                        <i class="fas fa-edit" aria-hidden="true"></i> Modifier
+                                    </a>
+                                    <form method="post" action="{{ path('admin_category_delete', {'id': category.id}) }}" class="inline-block" onsubmit="return confirm('Confirmer la suppression ?');" aria-label="Supprimer la catégorie {{ category.category }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition" aria-label="Confirmer la suppression de la catégorie">
+                                            <i class="fas fa-trash" aria-hidden="true"></i> Supprimer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr role="row">
+                                <td colspan="2" class="py-6 text-center text-gray-600 dark:text-gray-300" role="cell">Aucune catégorie trouvée.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUITS -->
+
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="mt-16">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" id="products-title">Produits</h3>
+                <form method="get" action="{{ path(app.request.attributes.get('_route')) }}" class="flex items-center space-x-2" aria-labelledby="products-title">
+                    <label for="product-search" class="sr-only">Rechercher un produit</label>
+                    <input type="text" id="product-search" name="product_search" placeholder="Rechercher un produit..." value="{{ app.request.get('product_search') }}" class="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-emerald-500 w-64 dark:bg-gray-800 dark:text-white" aria-describedby="product-search-helper">
+                    {% if app.request.get('search') %}
+                        <input type="hidden" name="search" value="{{ app.request.get('search') }}">
+                    {% endif %}
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-md text-sm font-semibold transition" aria-label="Rechercher un produit">
+                        <i class="fas fa-search" aria-hidden="true"></i> Rechercher
+                    </button>
+                </form>
+                <a href="{{ path('admin_product_new') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition shadow" aria-label="Ajouter un nouveau produit">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Nouveau Produit
+                </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-lg shadow-md" role="table">
+                    <thead class="bg-gray-100 dark:bg-gray-800">
+                        <tr>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white tracking-wider" scope="col">Titre Produit</th>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white tracking-wider" scope="col">Prix</th>
+                            <th class="text-left py-3 px-6 font-semibold text-gray-900 dark:text-white tracking-wider" scope="col">Image</th>
+                            <th class="text-center py-3 px-6 font-semibold text-gray-900 dark:text-white tracking-wider" scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr class="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition" role="row">
+                                <td class="py-4 px-6 text-gray-900 dark:text-white font-medium" role="cell">{{ product.titre }}</td>
+                                <td class="py-4 px-6 text-emerald-700 dark:text-emerald-300 font-semibold" role="cell">{{ (product.prix / 100)|number_format(2, ',', ' ') }} €</td>
+                                <td role="cell">
+                                    {% if product.image %}
+                                        <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" class="w-24 h-24 object-cover rounded shadow" role="img" aria-label="Image du produit {{ product.titre }}">
+                                    {% else %}
+                                        <span class="text-gray-500 dark:text-gray-400 italic" aria-live="polite">Pas d'image</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-4 px-6 text-center space-x-2" role="cell">
+                                    <a href="{{ path('admin_product_edit', {'id': product.id}) }}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-sm transition" aria-label="Modifier le produit {{ product.titre }}">
+                                        <i class="fas fa-edit" aria-hidden="true"></i> Modifier
+                                    </a>
+                                    <form method="post" action="{{ path('admin_product_delete', {'id': product.id}) }}" class="inline-block" onsubmit="return confirm('Confirmer la suppression ?');" aria-label="Supprimer le produit {{ product.titre }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
+                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition" aria-label="Confirmer la suppression du produit {{ product.titre }}">
+                                            <i class="fas fa-trash" aria-hidden="true"></i> Supprimer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr role="row">
+                                <td colspan="4" class="py-6 text-center text-gray-600 dark:text-gray-300" role="cell">Aucun produit trouvé.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

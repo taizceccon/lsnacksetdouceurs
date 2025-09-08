@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Utilisateur{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto p-8 bg-white dark:bg-stone-900 shadow-lg rounded-2xl mt-12 transition">
+    <h1 class="text-3xl font-semibold text-stone-900 dark:text-gray-600 mb-6 border-b border-gray-200 dark:border-stone-700 pb-3">
+        Modifier l'utilisateur
+    </h1>
+
+    {{ form_start(form) }}
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+            {{ form_row(form.email, {
+                label: 'Adresse email',
+                attr: { class: 'w-full' },
+                row_attr: { class: 'text-stone-700 dark:text-gray-400' }
+            }) }}
+
+            {{ form_row(form.nom, {
+                label: 'Nom complet',
+                attr: { class: 'w-full' },
+                row_attr: { class: 'text-stone-700 dark:text-gray-400' }
+            }) }}
+
+            {{ form_row(form.adresse, {
+                label: 'Adresse',
+                attr: { class: 'w-full' },
+                row_attr: { class: 'text-stone-700 dark:text-gray-400' }
+            }) }}
+
+            {{ form_row(form.telephone, {
+                label: 'Téléphone',
+                attr: { class: 'w-full' },
+                row_attr: { class: 'text-stone-700 dark:text-gray-400' }
+            }) }}
+
+            {{ form_row(form.plainPassword, {
+                label: 'Nouveau mot de passe',
+                attr: { class: 'w-full' },
+                row_attr: { class: 'text-stone-700 dark:text-gray-200' }
+            }) }}
+
+            {{ form_row(form.agreeTerms, {
+                label: 'J\'accepte les conditions générales',
+                row_attr: { class: 'flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400' }
+            }) }}
+        </div>
+
+        <div class="mt-8 space-y-4">
+            <div>
+                <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white font-medium py-2 px-6 rounded-lg shadow transition">
+                    Enregistrer
+                </button>
+            </div>
+
+            <div>
+                <a href="{{ path('admin_users') }}" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition text-sm">
+                    ← Retour à la liste des utilisateurs
+                </a>
+            </div>
+        </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un produit - Leila Snacks et Douceur{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-md">
+    <h1 class="text-3xl font-bold text-rose-400 mb-6 text-center">Ajouter un produit</h1>
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}, 'method': 'POST', 'action': path('admin_product_new')}) }}
+
+    <div class="grid grid-cols-1 gap-6">
+
+        <div>
+            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'block font-semibold mb-1'}}) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'w-full border border-gray-300 rounded px-3 py-2'}}) }}
+            {{ form_errors(form.titre) }}
+        </div>
+
+        <div>
+            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block font-semibold mb-1'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'w-full border border-gray-300 rounded px-3 py-2'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div>
+            {{ form_label(form.prix, 'Prix (€)', {'label_attr': {'class': 'block font-semibold mb-1'}}) }}
+            {{ form_widget(form.prix, {'attr': {'class': 'w-full border border-gray-300 rounded px-3 py-2'}}) }}
+            {{ form_errors(form.prix) }}
+        </div>
+
+        <div>
+            {{ form_label(form.imageFile, 'Image', {'label_attr': {'class': 'block font-semibold mb-1'}}) }}
+            {{ form_widget(form.imageFile, {'attr': {'class': 'w-full border border-gray-300 rounded px-3 py-2'}}) }}
+            {{ form_errors(form.imageFile) }}
+        </div>
+
+        <div>
+            {{ form_label(form.urlvideo, 'Lien vidéo (facultatif)', {'label_attr': {'class': 'block font-semibold mb-1'}}) }}
+            {{ form_widget(form.urlvideo, {'attr': {'class': 'w-full border border-gray-300 rounded px-3 py-2'}}) }}
+            {{ form_errors(form.urlvideo) }}
+        </div>
+
+        <div>
+            {{ form_label(form.category, 'Catégorie', {'label_attr': {'class': 'block font-semibold mb-1'}}) }}
+            {{ form_widget(form.category, {'attr': {'class': 'w-full border border-gray-300 rounded px-3 py-2'}}) }}
+            {{ form_errors(form.category) }}
+        </div>
+
+    </div>
+
+    <div class="mt-8 text-center">
+        <button type="submit" class="bg-pink-500 hover:bg-rose-400 text-white font-semibold px-6 py-2 rounded shadow">
+            Enregistrer le produit
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

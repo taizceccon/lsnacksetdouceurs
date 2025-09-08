@@ -1,0 +1,111 @@
+services: 
+  caddy:
+    image: caddy:latest
+    container_name: lsnacks_caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/certs:/etc/certs
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - php
+    networks:
+      - lsnacksnet
+
+  mysql:
+    container_name: lsnacks_mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lsnacksdb
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+    ports:
+      - '4307:3306'
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - lsnacksnet
+
+  php:
+    container_name: lsnacks_php
+    build:
+      context: ./php
+    env_file:
+      - .env 
+    environment:
+      DATABASE_URL: mysql://symfony:symfony@mysql:3306/lsnacksdb
+      MONGODB_URL: mongodb://mongodb:27017
+      MONGODB_DB: lsnacksdb
+      MAILER_DSN: smtp://mailpit:1025
+      APP_SECRET: "5c3b8fbd1234ab789cdef89012abcde9"  
+      MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+    # ports:
+      # - 8081:80
+    volumes:
+      - ./apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./app:/var/www:cached  
+      - symfony_cache:/var/www/var
+      - ./var/coverage:/var/www/var/coverage 
+    entrypoint: >
+      bash -c "chown -R www-data:www-data /var/www/var && chmod -R 775 /var/www/var && apache2-foreground"
+    depends_on:
+      - mysql
+      - mongodb
+      - mailpit
+    networks:
+      - lsnacksnet
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: lsnacks_phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - 8900:80
+    depends_on:
+      - mysql
+    networks:
+      - lsnacksnet
+
+  mongodb:
+    container_name: lsnacks_mongodb
+    image: mongo:6.0  # ou latest
+    ports:
+      - '27018:27017'
+    volumes:
+      - ./mongodb:/data/db
+    networks:
+      - lsnacksnet
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: lsnacks_mailpit
+    restart: unless-stopped
+    volumes:
+      - ./data/mailpit:/data
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - lsnacksnet
+
+networks:
+  lsnacksnet:
+    driver: bridge
+
+volumes:
+  symfony_cache:
+  caddy_data:
+  caddy_config:

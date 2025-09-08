@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Modifier Douceurs de Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+ <div class="flex items-center justify-center bg-white dark:bg-[#333] py-6 px-4 sm:px-6 lg:px-8 flex-grow">
+    <div class="max-w-md w-full bg-white dark:bg-[#333] p-8 rounded-lg shadow-xl border border-jaunePale space-y-6">
+
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Mon compte</h1>
+
+        {{ form_start(registrationForm) }}
+
+        {% for field in registrationForm %}
+            {% if field.vars.name != '_token' %}
+                <div>
+                    {{ form_label(field, null, { 'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-200'} }) }}
+                    {{ form_widget(field, {
+                        'attr': {
+                            'class': 'mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-400 focus:border-yellow-400 dark:bg-gray-700 dark:text-white'
+                        }
+                    }) }}
+                    {{ form_errors(field) }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="pt-4">
+            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-md shadow">
+                Enregistrer
+            </button>
+        </div>
+
+        {{ form_end(registrationForm) }}
+    </div>
+</div>
+
+
+
+{% endblock %}
