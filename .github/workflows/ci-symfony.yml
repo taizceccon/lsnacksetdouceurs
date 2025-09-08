@@ -9,6 +9,7 @@ on:
 jobs:
   symfony-tests:
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mysql:8.0
@@ -24,15 +25,17 @@ jobs:
           --health-interval=5s
           --health-timeout=3s
           --health-retries=10
+
       mongodb:
         image: mongo:6.0
         ports:
           - 27017:27017
         options: >-
-          --health-cmd="echo 'Mongo is ready'"
+          --health-cmd="mongosh --eval 'db.adminCommand({ ping: 1 })'"
           --health-interval=5s
           --health-timeout=3s
-          --health-retries=5
+          --health-retries=10
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -57,15 +60,20 @@ jobs:
           mysql -h127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'symfony'@'%' IDENTIFIED BY 'symfony';"
           mysql -h127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'symfony'@'%' WITH GRANT OPTION;"
           mysql -h127.0.0.1 -uroot -proot -e "FLUSH PRIVILEGES;"
+
       - name: Wait for MongoDB
         run: |
-          echo "Waiting 15s for MongoDB..."
-          sleep 15
+          until mongosh --eval 'db.adminCommand({ ping: 1 })'; do
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+
       - name: Setup Test Database
         run: |
           php bin/console doctrine:database:drop --force --env=test || true
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:update --force --env=test
+
       - name: Run PHPUnit Tests
         run: php bin/phpunit --testsuite=unit
         env:
