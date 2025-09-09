@@ -80,13 +80,13 @@
 
         {% else %}
         <a href="{{ path('app_login') }}" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition">
-          <img src="/images/login.webp" alt="Se connecter" loading="lazy" width="50" height="50" class="w-8 h-8 md:w-8 md:h-8" />
+          <img src="/images/login.webp" alt="Se connecter" loading="lazy" width="50" height="50" class="w-9 h-9 md:w-8 md:h-8" />
         </a>
         {% endif %}
 
         <!-- Panier avec compteur -->
         <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition" aria-label="Mon panier">
-          <img src="/images/panier-vide.webp" alt="Mon panier" loading="lazy" width="60" height="50" class="w-8 h-8 md:w-10 md:h-10" />
+          <img src="/images/panier-vide.webp" alt="Mon panier" loading="lazy" width="50" height="40" class="w-8 h-8 md:w-8 md:h-8" />
           <span id="cart-count" aria-live="polite" class="absolute top-0 right-0 bg-roseFonce text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-bold {{ cartItemCount == 0 ? 'hidden' : '' }}">{{ cartItemCount }}</span>
         </a>
 

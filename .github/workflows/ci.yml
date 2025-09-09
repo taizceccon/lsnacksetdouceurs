@@ -1,28 +1,74 @@
-name: CI Tailwind
+name: CI Symfony
 
 on:
   push:
-    branches: [main]
+    branches: [ dev, main ]
   pull_request:
-    branches: [main]
+    branches: [ dev, main ]
 
 jobs:
-  build:
+  symfony-tests:
     runs-on: ubuntu-latest
-
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: lsnacksdb
+          MYSQL_USER: symfony
+          MYSQL_PASSWORD: symfony
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="echo 'Mongo is ready'"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=5
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          node-version: '18'
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo_mysql, mongodb
+          coverage: xdebug
 
-      - name: Install dependencies
-        run: |
-          npm install
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Build Tailwind CSS
+      - name: Wait for MySQL and setup user
         run: |
-          npx tailwindcss -i ./src/input.css -o ./dist/output.css --minify
+          until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+          mysql -h127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS lsnacksdb_test;"
+          mysql -h127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'symfony'@'%' IDENTIFIED BY 'symfony';"
+          mysql -h127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'symfony'@'%' WITH GRANT OPTION;"
+          mysql -h127.0.0.1 -uroot -proot -e "FLUSH PRIVILEGES;"
+      - name: Wait for MongoDB
+        run: |
+          echo "Waiting 15s for MongoDB..."
+          sleep 15
+      - name: Setup Test Database
+        run: |
+          php bin/console doctrine:database:drop --force --env=test || true
+          php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:schema:update --force --env=test
+      - name: Run PHPUnit Tests
+        run: php bin/phpunit
+        env:
+          DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/lsnacksdb"
+          MONGODB_URL: "mongodb://127.0.0.1:27017"
+          MONGODB_DB: "lsnacksdb"

@@ -10,16 +10,16 @@ module.exports = {
     extend: {
       colors: {
         ...colors,
-        roseFonce: '#9e5e57',
+        roseFonce: '#c4847C',
         jaunePale: '#EDCC8B',
         bleuMenthe: '#198d8f',
         creme: '#FEFCFA',
-        vertSauge: '#487a59',
+        vertSauge: '#7B9E87',
         roseClair: '#E5C1BD',
         marromr:'#2a2828',
         fondDark: '#3A322F',
         texteClair: '#f3f3f3',
-        menthe: '#038c71',
+        menthe: '#84D3CE',
       },
       fontFamily: {
         serif: ['Playfair Display', 'serif'],

@@ -66,8 +66,8 @@ class AppFixtures extends Fixture
         // Création des produits
         $products = [
             [
-                'titre' => 'Coxinhas (Croquettes au poulet)',
-                'description' => 'De tendres bouchées brésiliennes au cœur savoureux de poulet effiloché...',
+                'titre' => 'Coxinhas )',
+                'description' => 'Croquettes au poulet, de tendres bouchées brésiliennes au cœur savoureux de poulet effiloché...',
                 'prix' => 250,
                 'image' => 'coxinha-frango.webp',
                 'urlvideo' => NULL,
@@ -106,8 +106,8 @@ class AppFixtures extends Fixture
                 'category' => $categories[1]  // Associé à la deuxième catégorie
             ],
             [
-                'titre' => 'Douceur au Coco - Beijinho',
-                'description' => 'Une bouchée tendre et sucrée à base de lait concentré et de noix de coco...',
+                'titre' => 'Beijinho Coco',
+                'description' => 'Douceur au Coco, une bouchée tendre et sucrée à base de lait concentré et de noix de coco...',
                 'prix' => 185,
                 'image' => 'douceurcoco.webp',
                 'urlvideo' => NULL,
@@ -131,7 +131,7 @@ class AppFixtures extends Fixture
             ],
             [
                 'titre' => 'Kit Party',
-                'description' => 'pour 20 persones25 quibes, - 25 Coxinhas (viande), 25 Bolinhas de Queijo - 25 rissois de viande,  ',
+                'description' => 'pour 20 persones25 quibes, - 25 Coxinhas (viande), 25 Bolinhas de Queijo - 25 rissois de viande, Idéal pour les fêtes ou un apéritif entre amis.',
                 'prix' => 20000,
                 'image' => 'kit.webp',
                 'urlvideo' => NULL,

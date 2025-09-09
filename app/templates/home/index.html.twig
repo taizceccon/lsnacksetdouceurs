@@ -59,7 +59,7 @@
                     <p class="text-green-600 font-semibold mb-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
                     <label for="quantity-{{ product.id }}" class="sr-only">Quantité pour {{ product.titre }}</label>
                     <input id="quantity-{{ product.id }}" type="number" name="quantity" value="1" min="1" aria-label="Quantité pour {{ product.titre }}" class="dark:bg-[#3A322F] dark:text-gray-200 border rounded w-20 text-center mb-2 focus:ring-2 focus:ring-rose-300 focus:outline-none transition">
-                    <button type="submit" aria-label="Ajouter {{ product.titre }} au panier" class="btn">
+                    <button type="submit" aria-label="Ajouter {{ product.titre }} au panier" class="btn w-full flex items-center justify-center">
                         <i class="fas fa-basket-shopping mr-2" aria-hidden="true"></i>Ajouter
                     </button>
                 </form>
