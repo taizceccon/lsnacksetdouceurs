@@ -1,5 +1,28 @@
 # LSnacks et Douceurs
-Une application Symfony pour gérer les snacks et douceurs.
+Une application Symfony
+
+## Description
+
+**Leila Snacks** est un site e-commerce artisanal proposant des snacks sucrés et salés faits maison.  
+Les utilisateurs peuvent découvrir, rechercher et commander en ligne des produits gourmands de qualité.
+
+---
+
+## Fonctionnalités principales
+
+- Recherche de produits par mots-clés avec affichage dynamique des résultats  
+- Affichage des produits par catégories : *Snacks*, *Douceurs*, *Packs & Coffrets*  
+- Pages produits avec description, prix, image, vidéo  
+- Formulaire de contact sécurisé avec validation RGPD et envoi d’email via **Symfony Mailer**  
+- Sécurité : intégration optionnelle de **reCAPTCHA v3** pour éviter les spams  
+- Pages statiques : *Mentions légales*, *Conditions générales*, *À propos*  
+- Gestion des erreurs et affichage de flash messages utilisateur  
+- Test d’envoi d’e-mails en développement via **Mailpit**  
+- Panier : ajout, mise à jour, suppression, validation de commande  
+- Gestion des avis clients  
+- Interface d’administration : gestion des produits, catégories, avis  
+- Paiement en ligne sécurisé via **Stripe** (avec webhooks)  
+- Inscription et authentification des utilisateurs
 
 ## Prérequis
 
@@ -12,49 +35,38 @@ Une application Symfony pour gérer les snacks et douceurs.
 
 ## Installation avec Docker
 
-1. **Cloner le projet**
-```bash
-git clone https://github.com/taizceccon/lsnacksetdouceurs.git
-cd lsnacksetdouceurs
-Construire et lancer les conteneurs
+## Installation locale (avec Symfony CLI)
 
-docker-compose up -d
+> **Prérequis** : PHP ≥ 8.1, Composer, Symfony CLI, MySQL, Mailpit (ou Docker)
+
+### Cloner le dépôt
+
+git clone https://github.com/taizceccon/leilasnacksetdouceurs.git
+cd leilasnacksetdouceurs
+
 Installer les dépendances PHP
 
-
-docker exec -it <nom_du_container_php> bash
 composer install
-Créer et préparer la base de données
+
+Configurer la base de données (fichier .env)
 
 
-php bin/console doctrine:database:create --env=dev
-php bin/console doctrine:schema:update --force --env=dev
-Exécution des tests
-Pour lancer PHPUnit dans l’environnement de test :
+DATABASE_URL="mysql://user:password@127.0.0.1:3306/leila_snacks?serverVersion=8.0"
+4. Appliquer les migrations
 
 
-APP_ENV=test php bin/phpunit --testdox
-Note : La base de données de test sera configurée automatiquement si tu utilises le workflow CI.
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
 
-Docker
-Le projet utilise Docker pour les services :
+Configurer l’envoi d’emails en développement (Mailpit)
+.env
 
-MySQL sur le port 3306
+MAILER_DSN=smtp://mailpit:1025
 
-MongoDB sur le port 27017
+ Accéder à l’interface Mailpit
 
-PHP 8.3 avec les extensions nécessaires
+Le website est accessible : http://localhost
 
-Pour rebuild les conteneurs :
+PHPMyAdmin : http://localhost:8900/
 
-
-docker-compose build --no-cache
-docker-compose up -d
-CI/CD
-Le workflow GitHub Actions est configuré pour :
-
-Installer PHP & Composer
-
-Configurer MySQL et MongoDB pour les tests
-
-Exécuter PHPUnit sur la branche main ou dev
+Mailpit : http://localhost:8025/
